@@ -6,7 +6,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+
+import javolution.io.Struct.Signed8;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.FileFilterUtils;
@@ -18,6 +22,12 @@ import struct.HeaderBlock;
 import struct.WeatherDataRecord;
 
 import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
+import org.joda.time.LocalTime;
+
+import data.DailySummary;
+import data.DailyWeatherData;
+import data.DataConverter;
 
 /**
  * @author	Jernej Jerin <jernej.jerin@gmail.com>
@@ -28,6 +38,10 @@ public class WlkReader {
 	// Properties
 	private File directory;
 	private DateTime dateTime;
+	
+	// Default is true which means that unit conversion from NonSI to SI
+	// will take place (from imperial to metric).
+	private boolean unit = true;
 	
 	/**
 	 * @return the directory
@@ -58,6 +72,20 @@ public class WlkReader {
 	}
 
 	/**
+	 * @return the unit
+	 */
+	public boolean isUnit() {
+		return unit;
+	}
+
+	/**
+	 * @param unit the unit to set
+	 */
+	public void setUnit(boolean unit) {
+		this.unit = unit;
+	}
+
+	/**
 	 * Constructor for setting root directory where the *.wlk files are contained.
 	 * @param directory
 	 */
@@ -76,19 +104,57 @@ public class WlkReader {
 		this.dateTime = dateTime;
 	}
 	
-	
-
 	/**
-	 * @param args
+	 * Constructor for setting root directory where the *.wlk files are contained
+	 * and whether there should be unit conversion.
+	 * @param directory
 	 */
-	public static void main(String[] args) {
-		try {
+	public WlkReader(File directory, boolean unit) {
+		this.directory = directory;
+		this.unit = unit;
+	}
+	
+	/**
+	 * Constructor for setting root directory where the *.wlk files are contained, date time
+	 * from which point onward in time to return data and whether there should be unit conversion.
+	 * @param directory
+	 * @param dateTime
+	 */
+	public WlkReader(File directory, DateTime dateTime, boolean unit) {
+		this.directory = directory;
+		this.dateTime = dateTime;
+		this.unit = unit;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	@SuppressWarnings("unused")
+	private List<DailyWeatherData> readData() throws IOException, 
+		IllegalArgumentException, UnsupportedOperationException, ArithmeticException  {
+		// First we get all the files with *.wlk extension in specified directory (usally DavisVan).
+		Collection<File> fileList = FileUtils.listFiles(this.directory, 
+				FileFilterUtils.suffixFileFilter("wlk"), null);
+		
+		// A collection where we will save data and later return it.
+		List<DailyWeatherData> dailyWeatherDataList = new ArrayList<DailyWeatherData>();
+		
+		// Object for converting data to specific format accordingly to user choice.
+		DataConverter dataConverter = new DataConverter(this.unit);
+		
+		// Then we iterate over all the files.
+		for (File file : fileList) {
+			// File name (yyyy-MM) is converted to date time.
+			DateTime fileDateTime = new DateTime(file.getName());
 			
-			// First we get all the files with wlk extension in DavisVan folder.
-			Collection<File> fileList = FileUtils.listFiles(new File("//JERNEJ-MINIPC/DavisVan"), FileFilterUtils.suffixFileFilter("wlk"), null);
+			// We need to add one month so that file is read even if date time
+			// for reading records is set to the last day in month.
+			fileDateTime = fileDateTime.plusMonths(1);
 			
-			// Then we iterate over all the files.
-			for (File file : fileList) {
+			// Check whether date time of the specified date time is before date time
+			// parsed from file name. If the date time is not set then we read all the files.
+			if (this.dateTime == null || fileDateTime.isBefore(dateTime)) {		
 				// The offset of daily summary record 1.
 				int offset = 0;
 				
@@ -107,22 +173,26 @@ public class WlkReader {
 				HeaderBlock headerBlock = new HeaderBlock();
 				headerBlock.setByteBuffer(buffer, offset);
 				
-				/*
-				 * Here we create instance of different data.
-				 */
+				// Here we create instance of different data.
 				DailySummary1 dailySummary1 = new DailySummary1();
 				dailySummary1.setByteBuffer(buffer, offset);
 				
-				DailySummary2 dailySummary2 = new DailySummary2();
-				
+				DailySummary2 dailySummary2 = new DailySummary2();				
 				WeatherDataRecord weatherDataRecord = new WeatherDataRecord();
 				
 				/*
 				 * Now we iterate through array of dayIndex and if the number of records in
 				 * day is larger than zero, then we calculate offset (this is the start of 
-				 * daily summary 1 of the day).
+				 * daily summary 1 of the day). We also set variable day which counts the number
+				 * of cycles through for loop. It should be noted that index 0 is not being used
+				 * in header block which means that indeks for day 1 is on index 1. That is why we
+				 * set the number of loops on -1.
 				 */
+				int day = -1;
 				for (DayIndex dayIndex : headerBlock.dayIndex) {
+					// Increment number of days gone by in file.
+					day++;
+					
 					if (dayIndex.recordsInDay.get() > 0) {
 						/*
 						 * First we compute offset. We need to add 212, 
@@ -132,23 +202,149 @@ public class WlkReader {
 						offset = (int) (dayIndex.startPos.get() * 88 + 212);
 						dailySummary1.setByteBufferPosition(offset);
 						
+						// Check for correct data type.
 						if (dailySummary1.dataType.get() == 2) {
-							// Save data for daily summary 1.
+							// Daily summary for this day.
+							DailySummary dailySummary = new DailySummary();
+							
+							// Set data from daily summary 1.
+							dailySummary.setDate(new LocalDate(fileDateTime.minusMonths(1).getYear(), 
+									fileDateTime.minusMonths(1).getMonthOfYear(), day));
+							if (dailySummary1.dataSpan.get() != Short.MIN_VALUE) {
+								dailySummary.setDataSpan((int) dailySummary1.dataSpan.get());
+							}
+							dailySummary.setWindRun(dataConverter.convertDailyWindRun(dailySummary1.dailyWindRunTotal.get()));
+							dailySummary.setDailyRain(dataConverter.convertDailyRainTotal(dailySummary1.dailyRainTotal.get()));
+							dailySummary.setDailyUVDose(dataConverter.convertUV(dailySummary1.dailyUVDose.get()));
+							
+							// Maximum values.
+							dailySummary.setMaxOutTemp(dataConverter.convertTemperature(dailySummary1.hiOutTemp.get()));
+							dailySummary.setTimeMaxOutTemp(this.computeTimeValue(0, dailySummary1.timeValues));
+							dailySummary.setMaxInTemp(dataConverter.convertTemperature(dailySummary1.hiInTemp.get()));
+							dailySummary.setTimeMaxInTemp(this.computeTimeValue(2, dailySummary1.timeValues));
+							dailySummary.setMaxWindChill(dataConverter.convertTemperature(dailySummary1.hiChill.get()));
+							dailySummary.setTimeMaxWindChill(this.computeTimeValue(4, dailySummary1.timeValues));
+							dailySummary.setMaxDewPoint(dataConverter.convertTemperature(dailySummary1.hiDew.get()));
+							dailySummary.setTimeMaxDewPoint(this.computeTimeValue(6, dailySummary1.timeValues));
+							dailySummary.setMaxOutHum(dataConverter.convertHumidity(dailySummary1.hiOutHum.get()));
+							dailySummary.setTimeMaxOutHum(this.computeTimeValue(8, dailySummary1.timeValues));
+							dailySummary.setMaxInHum(dataConverter.convertHumidity(dailySummary1.hiInHum.get()));
+							dailySummary.setTimeMaxInHum(this.computeTimeValue(10, dailySummary1.timeValues));
+							dailySummary.setMaxPressure(dataConverter.convertPressure(dailySummary1.hiBar.get()));
+							dailySummary.setTimeMaxPressure(this.computeTimeValue(12, dailySummary1.timeValues));
+							dailySummary.setMaxWindSpeed(dataConverter.convertWindSpeed(dailySummary1.hiSpeed.get()));
+							dailySummary.setMaxWindSpeedDir(dataConverter.convertWindDirection(dailySummary1.dirHiSpeed.get()));
+							dailySummary.setTimeMaxWindSpeed(this.computeTimeValue(14, dailySummary1.timeValues));
+							dailySummary.setMaxAvg10MinWindSpeed(dataConverter.convertWindSpeed(dailySummary1.hi10MinSpeed.get()));
+							dailySummary.setMaxAvg10MinWindSpeedDir(dataConverter.convertWindDirection(dailySummary1.hi10MinDir.get()));
+							dailySummary.setTimeMaxAvg10MinWindSpeed(this.computeTimeValue(15, dailySummary1.timeValues));
+							dailySummary.setMaxRainRate(dataConverter.convertRainRate(dailySummary1.hiRainRate.get()));
+							dailySummary.setTimeMaxRainRate(this.computeTimeValue(16, dailySummary1.timeValues));
+							dailySummary.setMaxUV(dataConverter.convertUV(dailySummary1.hiUV.get()));
+							dailySummary.setTimeMaxUV(this.computeTimeValue(17, dailySummary1.timeValues));
+							
+							// Minimum values.
+							dailySummary.setMinOutTemp(dataConverter.convertTemperature(dailySummary1.lowOutTemp.get()));
+							dailySummary.setTimeMinOutTemp(this.computeTimeValue(1, dailySummary1.timeValues));
+							dailySummary.setMinInTemp(dataConverter.convertTemperature(dailySummary1.lowInTemp.get()));
+							dailySummary.setTimeMinInTemp(this.computeTimeValue(3, dailySummary1.timeValues));
+							dailySummary.setMinWindChill(dataConverter.convertTemperature(dailySummary1.lowChill.get()));
+							dailySummary.setTimeMinWindChill(this.computeTimeValue(5, dailySummary1.timeValues));
+							dailySummary.setMinDewPoint(dataConverter.convertTemperature(dailySummary1.lowDew.get()));
+							dailySummary.setTimeMinDewPoint(this.computeTimeValue(7, dailySummary1.timeValues));
+							dailySummary.setMinOutHum(dataConverter.convertHumidity(dailySummary1.lowOutHum.get()));
+							dailySummary.setTimeMinOutHum(this.computeTimeValue(9, dailySummary1.timeValues));
+							dailySummary.setMinInHum(dataConverter.convertHumidity(dailySummary1.lowInHum.get()));
+							dailySummary.setTimeMinInHum(this.computeTimeValue(11, dailySummary1.timeValues));
+							dailySummary.setMinPressure(dataConverter.convertPressure(dailySummary1.lowBar.get()));
+							dailySummary.setTimeMinPressure(this.computeTimeValue(13, dailySummary1.timeValues));
+							
+							// Average values.
+							dailySummary.setAvgOutTemp(dataConverter.convertTemperature(dailySummary1.avgOutTemp.get()));
+							dailySummary.setAvgInTemp(dataConverter.convertTemperature(dailySummary1.avgInTemp.get()));
+							dailySummary.setAvgWindChill(dataConverter.convertTemperature(dailySummary1.avgChill.get()));
+							dailySummary.setAvgDewPoint(dataConverter.convertTemperature(dailySummary1.avgDew.get()));
+							dailySummary.setAvgOutHum(dataConverter.convertHumidity(dailySummary1.avgOutHum.get()));
+							dailySummary.setAvgPressure(dataConverter.convertPressure(dailySummary1.avgBar.get()));
+							dailySummary.setAvgWindSpeed(dataConverter.convertWindSpeed(dailySummary1.avgSpeed.get()));
+							
+							// Continue with added offset for getting daily summary 2.
 							offset += 88;
 							dailySummary2.setByteBuffer(buffer, offset);
 							
+							// Check for correct data type.
 							if (dailySummary2.dataType.get() == 3) {
 								// Save data for daily summary 2.
+								dailySummary.setNumWindPackets(dailySummary2.numWindPackets.get());
+								dailySummary.setDailySolarEnergy(dataConverter.convertSolarEnergy(dailySummary2.dailySolarEnergy.get()));
+								dailySummary.setMinSunLight((int) dailySummary2.minSunLight.get());
+								dailySummary.setDailyETTotal(dataConverter.convertRainRate(dailySummary2.dailyETTotal.get()));
+								dailySummary.setIntegratedHeatDD65(dataConverter.convertTemperature(dailySummary2.integratedHeatDD65.get()));
+								dailySummary.setWindDirectionDistribution(this.computeWindDirectionDistribution(dailySummary2.dirBins));
+								dailySummary.setIntegratedCoolDD65(dataConverter.convertTemperature(dailySummary2.integratedCoolDD65.get()));
+												
+								// Maximum values.
+								dailySummary.setMaxSolar((double) dailySummary2.hiSolar.get());
+								dailySummary.setTimeMaxSolar(this.computeTimeValue(0, dailySummary2.timeValues));
+								dailySummary.setMaxHeatIndex(dataConverter.convertTemperature(dailySummary2.hiHeat.get()));
+								dailySummary.setTimeMaxSolar(this.computeTimeValue(1, dailySummary2.timeValues));
+								dailySummary.setMaxTHSWIndex(dataConverter.convertTemperature(dailySummary2.hiTHSW.get()));
+								dailySummary.setTimeMaxTHSWIndex(this.computeTimeValue(3, dailySummary2.timeValues));
+								dailySummary.setMaxTHWIndex(dataConverter.convertTemperature(dailySummary2.hiTHW.get()));
+								dailySummary.setTimeMaxTHWIndex(this.computeTimeValue(5, dailySummary2.timeValues));
 								
+								// Minimum values.
+								dailySummary.setMinHeatIndex(dataConverter.convertTemperature(dailySummary2.lowHeat.get()));
+								dailySummary.setTimeMinHeatIndex(this.computeTimeValue(2, dailySummary2.timeValues));
+								dailySummary.setMinTHSWIndex(dataConverter.convertTemperature(dailySummary2.lowTHSW.get()));
+								dailySummary.setTimeMinTHSWIndex(this.computeTimeValue(4, dailySummary2.timeValues));
+								dailySummary.setMinTHWIndex(dataConverter.convertTemperature(dailySummary2.lowTHW.get()));
+								dailySummary.setTimeMinTHWIndex(this.computeTimeValue(6, dailySummary2.timeValues));
+								
+								// Avg values.
+								dailySummary.setAvgHeatIndex(dataConverter.convertTemperature(dailySummary2.avgHeat.get()));
+										
 								// Here we subtracted records in day by two, because we have
 								// already accounted daily summary 1 and daily summary 2.
 								for (int i = 0; i < dayIndex.recordsInDay.get() - 2; i++) {
 									offset += 88;
 									weatherDataRecord.setByteBuffer(buffer, offset);
 									
+									// Check for correct data type.
 									if (weatherDataRecord.dataType.get() == 1) {
-										// Save data for weather data record.
-										// int  forecast = weatherDataRecord.forecast.get();
+										// We get the hours from packed time by dividing it with 60 (represents minutes)
+										// and round it to the nearest integer.
+										short hours = (short) Math.floor(weatherDataRecord.packedTime.get() / 60);
+										
+										// We get the minutes from packed time by computing the reminder 
+										// when dividing packed time with 60
+										short minutes = (short) (weatherDataRecord.packedTime.get() % 60);
+										
+										/*
+										 * Now we can create date time on the basis of values from the name of the file (year, month)
+										 * and packed time from weather data record (day, hours, minutes). Because the record with time
+										 * 00:00 (hours = 24) belongs to previous day (interval of records is from 00:00 - 23:59) 
+										 * we need to set hours and minutes to 00:00 (24:00 -> 00:00) and add a day.
+										 */
+										
+										DateTime dateRecord;
+										if (hours == 24) {
+											dateRecord = new DateTime(fileDateTime.minusMonths(1).getYear(), fileDateTime.minusMonths(1).getMonthOfYear(), day, 0, 0);
+											dateRecord = dateRecord.plusDays(1);
+										}
+										else {
+											dateRecord = new DateTime(fileDateTime.minusMonths(1).getYear(), fileDateTime.minusMonths(1).getMonthOfYear(), day, hours, minutes);
+										}
+										
+										// Is the date of the record after specified date time.
+										if (dateRecord.isAfter(this.dateTime)) {
+											// Saving data.
+											
+											
+											// Setting the date and time of the user input record to the
+											// date time of the last record.
+											this.dateTime = dateRecord;
+										}
 									}
 									else {
 										throw new ArithmeticException("Error in offset. Wrong data type for weather data record!");
@@ -165,15 +361,8 @@ public class WlkReader {
 					}
 				}
 			}
-		} catch (IOException e) {
-			System.err.println(e.getMessage());
-		} catch (IllegalArgumentException e) {
-			System.err.println(e.getMessage());
-		} catch (UnsupportedOperationException e) {
-			System.err.println(e.getMessage());
-		} catch (ArithmeticException e) {
-			System.err.println(e.getMessage());
 		}
+		return dailyWeatherDataList;
 	}
 
 	/**
@@ -219,5 +408,76 @@ public class WlkReader {
 	    	inputStream.close();
 	    	return bytes;
 	    }
+	}
+	
+	/**
+	 * 
+	 * 
+	 * @param index
+	 * @param timeValues
+	 * @return
+	 */
+	private LocalTime computeTimeValue(int index, Signed8[] timeValues) {
+		// Compute field index from index. Integer division (rounded down).
+		int fieldIndex = (int) ((index / 2) * 3);
+
+		// Packed time which we will get from time values.
+		int packedTime;
+		
+		// If index is even.
+		if (index % 2 == 0) {
+			packedTime = timeValues[fieldIndex].get() + (timeValues[fieldIndex + 2].get() & 0x0F) << 8;
+		} else {
+			packedTime = timeValues[fieldIndex + 1].get() + (timeValues[fieldIndex + 2].get() & 0xF0) << 4; 
+		}
+		
+		// A value of 0x0FFF or 0x07FF indicates no data available (i. e. invalid data).
+		if (packedTime == 0x0FFF || packedTime == 0x07FF) {
+			return null;
+		} else {
+			// We get the hours by dividning packed time with 60 and rounding it
+			// down to the nearest integer value.
+			short hourOfDay = (short) Math.floor(packedTime / 60);
+			
+			// We get the minutes by computing the reminder when dividing with 60.
+			short minuteOfHour = (short) (packedTime % 60);
+			
+			return new LocalTime(hourOfDay, minuteOfHour);
+		}
+	}
+	
+	/**
+	 * 
+	 * 
+	 * @param direction
+	 * @return
+	 */
+	private Integer[] computeWindDirectionDistribution(Signed8[] direction) {
+		// If index is even.
+		Integer[] windDirectionDistribution = new Integer[16];
+		
+		for (int i = 0; i <= 16; i++) {
+			// Compute field index from index. Integer division (rounded down).
+			int fieldIndex = (int) ((i / 2) * 3);
+			
+			// Minutes.
+			int minutes;
+			
+			if (i % 2 == 0) {
+				minutes = direction[fieldIndex].get() + (direction[fieldIndex + 2].get() & 0x0F) << 8;
+			} else {
+				minutes = direction[fieldIndex + 1].get() + (direction[fieldIndex + 2].get() & 0xF0) << 4; 
+			}
+			
+			// A value of 0x0FFF or 0x07FF indicates no data available (i. e. invalid data).
+			if (minutes == 0x0FFF || minutes == 0x07FF) {
+				windDirectionDistribution[i] = null;
+			} else {
+				// Saving values.
+				windDirectionDistribution[i] = minutes;
+			}
+		}
+		
+		return windDirectionDistribution;
 	}
 }
