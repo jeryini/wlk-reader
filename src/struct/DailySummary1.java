@@ -131,7 +131,7 @@ public class DailySummary1 extends Struct {
 	
 	// Direction of the highest average 10min wind speed 
 	// represented in direction code (0-15, 255).
-	public final Signed8 hi10MinDir = new Signed8();
+	public final Unsigned8 hi10MinDir = new Unsigned8();
 	
 	// The daily rain total represented in 1/1000'th
 	// of an inch.
@@ -145,7 +145,7 @@ public class DailySummary1 extends Struct {
 	public final Signed16 dailyUVDose = new Signed16();
 	
 	// UV Index represented in tenth of a UV Index.
-	public final Signed8 hiUV = new Signed8();
+	public final Unsigned8 hiUV = new Unsigned8();
 	
 	/*
 	 * Space for 18 time values:
