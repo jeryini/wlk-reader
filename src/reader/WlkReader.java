@@ -303,6 +303,9 @@ public class WlkReader {
 								
 								// Avg values.
 								dailySummary.setAvgHeatIndex(dataConverter.convertTemperature(dailySummary2.avgHeat.get()));
+								
+								// Storing weather data records for each measurement.
+								List<data.WeatherDataRecord> weatherDataRecordList = new ArrayList<data.WeatherDataRecord>();
 										
 								// Here we subtracted records in day by two, because we have
 								// already accounted daily summary 1 and daily summary 2.
@@ -338,18 +341,57 @@ public class WlkReader {
 										
 										// Is the date of the record after specified date time.
 										if (dateRecord.isAfter(this.dateTime)) {
-											// Saving data.
+											// Create a new WeatherDataRecord.
+											data.WeatherDataRecord weatherRecord = new data.WeatherDataRecord();
 											
+											// Saving data.
+											weatherRecord.setArchiveInterval(weatherDataRecord.archiveInterval.get());
+											weatherRecord.setIconFlags(weatherDataRecord.iconFlags.get());
+											weatherRecord.setTime(dateRecord.toLocalTime());
+											weatherRecord.setNumwindSamples((int) weatherDataRecord.numWindSamples.get());
+											weatherRecord.setOutTemp(dataConverter.convertTemperature(weatherDataRecord.outsideTemp.get()));
+											weatherRecord.setMaxOutTemp(dataConverter.convertTemperature(weatherDataRecord.hiOutsideTemp.get()));
+											weatherRecord.setMinOutTemp(dataConverter.convertTemperature(weatherDataRecord.lowOutsideTemp.get()));
+											weatherRecord.setInTemp(dataConverter.convertTemperature(weatherDataRecord.insideTemp.get()));
+											weatherRecord.setInHumidity(dataConverter.convertHumidity(weatherDataRecord.insideHum.get()));
+											weatherRecord.setPrecipitation(dataConverter.convertDailyRainTotal((short) weatherDataRecord.rain.get()));
+											weatherRecord.setMaxPrecipitationRate(dataConverter.convertRainRate(weatherDataRecord.hiRainRate.get()));
+											weatherRecord.setWindSpeed(dataConverter.convertWindSpeed(weatherDataRecord.windSpeed.get()));
+											weatherRecord.setMaxWindSpeed(dataConverter.convertWindSpeed(weatherDataRecord.hiWindSpeed.get()));
+											weatherRecord.setWindDirection(dataConverter.convertWindDirection((short) weatherDataRecord.windDirection.get()));
+											weatherRecord.setMaxWindDirection(dataConverter.convertWindDirection((short) weatherDataRecord.hiWindDirection.get()));
+											weatherRecord.setSolarRad(dataConverter.convertSolarEnergy(weatherDataRecord.solarRad.get()));
+											weatherRecord.setMaxSolarRad(dataConverter.convertSolarEnergy(weatherDataRecord.hiSolarRad.get()));
+											weatherRecord.setUV(dataConverter.convertUV((short) weatherDataRecord.UV.get()));
+											weatherRecord.setMaxUV(dataConverter.convertUV((short) weatherDataRecord.hiUV.get()));
+											weatherRecord.setLeafTemp(this.computeExtraSensors(weatherDataRecord.leafTemp, dataConverter));
+											weatherRecord.setExtraRad((double) weatherDataRecord.extraRad.get());
+											weatherRecord.setForecast((int) weatherDataRecord.forecast.get());
+											weatherRecord.setET(dataConverter.convertDailyRainTotal((short) weatherDataRecord.ET.get()));
+											weatherRecord.setSoilTemp(this.computeExtraSensors(weatherDataRecord.soilTemp, dataConverter));
+											// Setting soil moisture! weatherRecord.setSoilMoisture...
+											// Setting leaf wetness! weatherRecord.setLeafWetness...
+											weatherRecord.setExtraTemp(this.computeExtraSensors(weatherDataRecord.extraTemp, dataConverter));
+											// Setting extra humidity! weatherRecord.setExtraHumidity...
 											
 											// Setting the date and time of the user input record to the
 											// date time of the last record.
 											this.dateTime = dateRecord;
+											
+											// Storing it into the list.
+											weatherDataRecordList.add(weatherRecord);
 										}
 									}
 									else {
 										throw new ArithmeticException("Error in offset. Wrong data type for weather data record!");
 									}
 								}
+								
+								// Here we will store daily summary as well as weather data record.
+								DailyWeatherData dailyWeatherData = new DailyWeatherData(dailySummary, weatherDataRecordList);
+								
+								// Add it to the list of daily weather data which is in the end returned.
+								dailyWeatherDataList.add(dailyWeatherData);
 							}
 							else {
 								throw new ArithmeticException("Error in offset. Wrong data type for daily summary 2!"); 
@@ -384,6 +426,8 @@ public class WlkReader {
 		 * to ensure that file is not larger than Integer.MAX_VALUE.
 		 */
 	    if (length > Integer.MAX_VALUE) {
+	    	// Close the input stream.
+	    	inputStream.close();
 	    	return null;
 	    }
 	    else {
@@ -401,6 +445,8 @@ public class WlkReader {
 	    	
 	    	// Ensure that all the bytes have been read in.
 	    	if (offset < bytes.length) {
+	    		// Close the input stream.
+		    	inputStream.close();
 	    		throw new IOException("Could not completely read file " + file.getName());
 	    	}
 	    	
@@ -479,5 +525,19 @@ public class WlkReader {
 		}
 		
 		return windDirectionDistribution;
+	}
+	
+	/**
+	 * 
+	 * @param temperatureSensors
+	 * @return
+	 */
+	private Double[] computeExtraSensors(Signed8[] temperatureSensors, DataConverter dataConverter) {
+		Double[] computedTemperature = new Double[temperatureSensors.length];
+		for (int i = 0; i < temperatureSensors.length; i++) {
+			computedTemperature[i] = dataConverter.convertTemperature((short) (temperatureSensors[i].get() - 90));
+		}
+		
+		return computedTemperature;
 	}
 }
