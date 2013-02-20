@@ -13,6 +13,7 @@ import java.util.List;
 import javolution.io.Struct.Signed8;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.filefilter.FileFilterUtils;
 
 import struct.DailySummary1;
@@ -130,8 +131,7 @@ public class WlkReader {
 	 * 
 	 * @return
 	 */
-	@SuppressWarnings("unused")
-	private List<DailyWeatherData> readData() throws IOException, 
+	public List<DailyWeatherData> readData() throws IOException, 
 		IllegalArgumentException, UnsupportedOperationException, ArithmeticException  {
 		// First we get all the files with *.wlk extension in specified directory (usally DavisVan).
 		Collection<File> fileList = FileUtils.listFiles(this.directory, 
@@ -146,7 +146,7 @@ public class WlkReader {
 		// Then we iterate over all the files.
 		for (File file : fileList) {
 			// File name (yyyy-MM) is converted to date time.
-			DateTime fileDateTime = new DateTime(file.getName());
+			DateTime fileDateTime = new DateTime(FilenameUtils.removeExtension(file.getName()));
 			
 			// We need to add one month so that file is read even if date time
 			// for reading records is set to the last day in month.
