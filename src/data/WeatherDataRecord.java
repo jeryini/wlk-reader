@@ -20,7 +20,7 @@ public class WeatherDataRecord {
 	private Double maxOutTemp;
 	private Double minOutTemp;
 	private Double inTemp;
-	private Double inHumidity;
+	private Integer inHumidity;
 	private Double precipitation;
 	private Double maxPrecipitationRate;
 	private Double windSpeed;
@@ -85,7 +85,7 @@ public class WeatherDataRecord {
 	public WeatherDataRecord(int archiveInterval, int iconFlags,
 			LocalTime time, Integer numwindSamples, Double outTemp,
 			Double maxOutTemp, Double minOutTemp, Double inTemp,
-			Double inHumidity, Double precipitation,
+			Integer inHumidity, Double precipitation,
 			Double maxPrecipitationRate, Double windSpeed, Double maxWindSpeed,
 			Double windDirection, Double maxWindDirection, Double solarRad,
 			Double maxSolarRad, Double uV, Double maxUV, Double[] leafTemp,
@@ -239,14 +239,14 @@ public class WeatherDataRecord {
 	/**
 	 * @return the inHumidity
 	 */
-	public Double getInHumidity() {
+	public Integer getInHumidity() {
 		return inHumidity;
 	}
 
 	/**
 	 * @param inHumidity the inHumidity to set
 	 */
-	public void setInHumidity(Double inHumidity) {
+	public void setInHumidity(Integer inHumidity) {
 		this.inHumidity = inHumidity;
 	}
 
