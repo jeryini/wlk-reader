@@ -20,6 +20,8 @@ public class WeatherDataRecord {
 	private Double maxOutTemp;
 	private Double minOutTemp;
 	private Double inTemp;
+	private Double pressure;
+	private Integer outHumidity;
 	private Integer inHumidity;
 	private Double precipitation;
 	private Double maxPrecipitationRate;
@@ -49,8 +51,9 @@ public class WeatherDataRecord {
 		super();
 	}
 	
+
 	/**
-	 * Constructor for all the fields.
+	 * Constructor using all the fields.
 	 * 
 	 * @param archiveInterval
 	 * @param iconFlags
@@ -60,6 +63,8 @@ public class WeatherDataRecord {
 	 * @param maxOutTemp
 	 * @param minOutTemp
 	 * @param inTemp
+	 * @param pressure
+	 * @param outHumidity
 	 * @param inHumidity
 	 * @param precipitation
 	 * @param maxPrecipitationRate
@@ -85,11 +90,12 @@ public class WeatherDataRecord {
 	public WeatherDataRecord(int archiveInterval, int iconFlags,
 			LocalTime time, Integer numwindSamples, Double outTemp,
 			Double maxOutTemp, Double minOutTemp, Double inTemp,
-			Integer inHumidity, Double precipitation,
-			Double maxPrecipitationRate, Double windSpeed, Double maxWindSpeed,
-			Double windDirection, Double maxWindDirection, Double solarRad,
-			Double maxSolarRad, Double uV, Double maxUV, Double[] leafTemp,
-			Double extraRad, Double[] newSensors, Integer forecast, Double eT,
+			Double pressure, Integer outHumidity, Integer inHumidity,
+			Double precipitation, Double maxPrecipitationRate,
+			Double windSpeed, Double maxWindSpeed, Double windDirection,
+			Double maxWindDirection, Double solarRad, Double maxSolarRad,
+			Double uV, Double maxUV, Double[] leafTemp, Double extraRad,
+			Double[] newSensors, Integer forecast, Double eT,
 			Double[] soilTemp, Double[] soilMoisture, Double[] leafWetness,
 			Double[] extraTemp, Double[] extraHum) {
 		super();
@@ -101,6 +107,8 @@ public class WeatherDataRecord {
 		this.maxOutTemp = maxOutTemp;
 		this.minOutTemp = minOutTemp;
 		this.inTemp = inTemp;
+		this.pressure = pressure;
+		this.outHumidity = outHumidity;
 		this.inHumidity = inHumidity;
 		this.precipitation = precipitation;
 		this.maxPrecipitationRate = maxPrecipitationRate;
@@ -123,6 +131,7 @@ public class WeatherDataRecord {
 		this.extraTemp = extraTemp;
 		this.extraHum = extraHum;
 	}
+
 
 	/**
 	 * @return the archiveInterval
@@ -234,6 +243,34 @@ public class WeatherDataRecord {
 	 */
 	public void setInTemp(Double inTemp) {
 		this.inTemp = inTemp;
+	}
+
+	/**
+	 * @return the pressure
+	 */
+	public Double getPressure() {
+		return pressure;
+	}
+
+	/**
+	 * @param pressure the pressure to set
+	 */
+	public void setPressure(Double pressure) {
+		this.pressure = pressure;
+	}
+
+	/**
+	 * @return the outHumidity
+	 */
+	public Integer getOutHumidity() {
+		return outHumidity;
+	}
+
+	/**
+	 * @param outHumidity the outHumidity to set
+	 */
+	public void setOutHumidity(Integer outHumidity) {
+		this.outHumidity = outHumidity;
 	}
 
 	/**
