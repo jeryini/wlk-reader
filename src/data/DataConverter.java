@@ -42,10 +42,13 @@ public class DataConverter {
 	}
 	
 	/**
-	 * If conversion is enabled then it computes metric units from imperial units.
+	 * If unit conversion is disabled than it converts pressure in 
+	 * thousand inches of mercury to inches of mercury. If unit 
+	 * conversion is enabled then it converts thousand inches of 
+	 * mercury to hectopascal.
 	 * 
 	 * @param pressure
-	 * @return
+	 * @return Converted pressure
 	 */
 	public Double convertPressure(Short pressure) {
 		if (pressure == Short.MIN_VALUE) {
@@ -56,19 +59,21 @@ public class DataConverter {
 				// Conversion from imperial unit (inch of mercury mili) to metric units (hecto pascal).
 				return INCH_OF_MERCURY_MILI.getConverterTo(HECTO_PASCAL).convert(pressure);
 			} else {
-				// Only multiplication with 1e3.
-				return (double) (pressure * 1e3);
+				// Only division with 1e3.
+				return (double) (pressure / 1e3);
 			}
 		}
 	}
 	
 	/**
-	 * 
+	 * If unit conversion is disabled than it converts windrun in 
+	 * deci miles to miles. If unit conversion is enabled then it 
+	 * converts deci miles to kilometers.
 	 * 
 	 * @param windRun
-	 * @return
+	 * @return Converted windrun
 	 */
-	public Double convertDailyWindRun(Short windRun) {
+	public Double convertWindRun(Short windRun) {
 		if (windRun == Short.MIN_VALUE) {
 			return null;
 		} else {
@@ -77,30 +82,30 @@ public class DataConverter {
 				// Conversion from imperial unit (deci mile) to metric units (kilometer).
 				return MILE_DECI.getConverterTo(KILOMETER).convert(windRun);
 			} else {
-				// Only multiplication with 1e1.
-				return (double) (windRun * 1e1);
+				// Only division with 1e1.
+				return (double) (windRun / 1e1);
 			}
 		}
 	}
 	
 	/**
-	 * The daily rain total is represented in 1/1000'th
+	 * The precipitation which is represented in 1/1000'th
 	 * of an inch.
 	 * 
-	 * @param rain
+	 * @param precipitation
 	 * @return
 	 */
-	public Double convertDailyRainTotal(Short rain) {
-		if (rain == Short.MIN_VALUE) {
+	public Double convertPrecipitation(Short precipitation) {
+		if (precipitation == Short.MIN_VALUE) {
 			return null;
 		} else {
 			// Is unit conversion enabled?
 			if (this.unit) {
 				// Conversion from imperial unit (inch) to metric units (mm).
-				return INCH_MILI.getConverterTo(MILIMETER).convert(rain);
+				return INCH_MILI.getConverterTo(MILIMETER).convert(precipitation);
 			} else {
-				// Only multiplication with 1e3.
-				return (double) (rain * 1e3);
+				// Only division with 1e3.
+				return (double) (precipitation / 1e3);
 			}
 		}
 	}
