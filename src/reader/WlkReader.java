@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.List;
 
 import javolution.io.Struct.Signed8;
+import javolution.io.Struct.Unsigned8;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -213,8 +214,8 @@ public class WlkReader {
 							if (dailySummary1.dataSpan.get() != Short.MIN_VALUE) {
 								dailySummary.setDataSpan((int) dailySummary1.dataSpan.get());
 							}
-							dailySummary.setWindRun(dataConverter.convertDailyWindRun(dailySummary1.dailyWindRunTotal.get()));
-							dailySummary.setDailyRain(dataConverter.convertDailyRainTotal(dailySummary1.dailyRainTotal.get()));
+							dailySummary.setWindRun(dataConverter.convertWindRun(dailySummary1.dailyWindRunTotal.get()));
+							dailySummary.setDailyRain(dataConverter.convertPrecipitation(dailySummary1.dailyRainTotal.get()));
 							dailySummary.setDailyUVDose(dataConverter.convertUV(dailySummary1.dailyUVDose.get()));
 							
 							// Maximum values.
@@ -285,21 +286,21 @@ public class WlkReader {
 												
 								// Maximum values.
 								dailySummary.setMaxSolar((double) dailySummary2.hiSolar.get());
-								dailySummary.setTimeMaxSolar(this.computeTimeValue(0, dailySummary2.timeValues));
+								//dailySummary.setTimeMaxSolar(this.computeTimeValue(0, dailySummary2.timeValues));
 								dailySummary.setMaxHeatIndex(dataConverter.convertTemperature(dailySummary2.hiHeat.get()));
-								dailySummary.setTimeMaxSolar(this.computeTimeValue(1, dailySummary2.timeValues));
+								//dailySummary.setTimeMaxSolar(this.computeTimeValue(1, dailySummary2.timeValues));
 								dailySummary.setMaxTHSWIndex(dataConverter.convertTemperature(dailySummary2.hiTHSW.get()));
-								dailySummary.setTimeMaxTHSWIndex(this.computeTimeValue(3, dailySummary2.timeValues));
+								//dailySummary.setTimeMaxTHSWIndex(this.computeTimeValue(3, dailySummary2.timeValues));
 								dailySummary.setMaxTHWIndex(dataConverter.convertTemperature(dailySummary2.hiTHW.get()));
-								dailySummary.setTimeMaxTHWIndex(this.computeTimeValue(5, dailySummary2.timeValues));
+								//dailySummary.setTimeMaxTHWIndex(this.computeTimeValue(5, dailySummary2.timeValues));
 								
 								// Minimum values.
 								dailySummary.setMinHeatIndex(dataConverter.convertTemperature(dailySummary2.lowHeat.get()));
-								dailySummary.setTimeMinHeatIndex(this.computeTimeValue(2, dailySummary2.timeValues));
+								//dailySummary.setTimeMinHeatIndex(this.computeTimeValue(2, dailySummary2.timeValues));
 								dailySummary.setMinTHSWIndex(dataConverter.convertTemperature(dailySummary2.lowTHSW.get()));
-								dailySummary.setTimeMinTHSWIndex(this.computeTimeValue(4, dailySummary2.timeValues));
+								//dailySummary.setTimeMinTHSWIndex(this.computeTimeValue(4, dailySummary2.timeValues));
 								dailySummary.setMinTHWIndex(dataConverter.convertTemperature(dailySummary2.lowTHW.get()));
-								dailySummary.setTimeMinTHWIndex(this.computeTimeValue(6, dailySummary2.timeValues));
+								//dailySummary.setTimeMinTHWIndex(this.computeTimeValue(6, dailySummary2.timeValues));
 								
 								// Avg values.
 								dailySummary.setAvgHeatIndex(dataConverter.convertTemperature(dailySummary2.avgHeat.get()));
@@ -353,8 +354,10 @@ public class WlkReader {
 											weatherRecord.setMaxOutTemp(dataConverter.convertTemperature(weatherDataRecord.hiOutsideTemp.get()));
 											weatherRecord.setMinOutTemp(dataConverter.convertTemperature(weatherDataRecord.lowOutsideTemp.get()));
 											weatherRecord.setInTemp(dataConverter.convertTemperature(weatherDataRecord.insideTemp.get()));
+											weatherRecord.setPressure(dataConverter.convertPressure(weatherDataRecord.barometer.get()));
+											weatherRecord.setOutHumidity(dataConverter.convertHumidity(weatherDataRecord.outsideHum.get()));	
 											weatherRecord.setInHumidity(dataConverter.convertHumidity(weatherDataRecord.insideHum.get()));
-											weatherRecord.setPrecipitation(dataConverter.convertDailyRainTotal((short) weatherDataRecord.rain.get()));
+											weatherRecord.setPrecipitation(dataConverter.convertPrecipitation((short) weatherDataRecord.rain.get()));
 											weatherRecord.setMaxPrecipitationRate(dataConverter.convertRainRate(weatherDataRecord.hiRainRate.get()));
 											weatherRecord.setWindSpeed(dataConverter.convertWindSpeed(weatherDataRecord.windSpeed.get()));
 											weatherRecord.setMaxWindSpeed(dataConverter.convertWindSpeed(weatherDataRecord.hiWindSpeed.get()));
@@ -367,7 +370,7 @@ public class WlkReader {
 											weatherRecord.setLeafTemp(this.computeExtraSensors(weatherDataRecord.leafTemp, dataConverter));
 											weatherRecord.setExtraRad((double) weatherDataRecord.extraRad.get());
 											weatherRecord.setForecast((int) weatherDataRecord.forecast.get());
-											weatherRecord.setET(dataConverter.convertDailyRainTotal((short) weatherDataRecord.ET.get()));
+											weatherRecord.setET(dataConverter.convertPrecipitation((short) weatherDataRecord.ET.get()));
 											weatherRecord.setSoilTemp(this.computeExtraSensors(weatherDataRecord.soilTemp, dataConverter));
 											// Setting soil moisture! weatherRecord.setSoilMoisture...
 											// Setting leaf wetness! weatherRecord.setLeafWetness...
@@ -463,7 +466,7 @@ public class WlkReader {
 	 * @param timeValues
 	 * @return
 	 */
-	private LocalTime computeTimeValue(int index, Signed8[] timeValues) {
+	private LocalTime computeTimeValue(int index, Unsigned8[] timeValues) {
 		// Compute field index from index. Integer division (rounded down).
 		int fieldIndex = (int) ((index / 2) * 3);
 
@@ -472,7 +475,11 @@ public class WlkReader {
 		
 		// If index is even.
 		if (index % 2 == 0) {
-			packedTime = timeValues[fieldIndex].get() + (timeValues[fieldIndex + 2].get() & 0x0F) << 8;
+			int time1 = timeValues[fieldIndex].get();
+			int time2 = timeValues[fieldIndex + 2].get();
+			time2 &= 0x0F;
+			time2 <<= 8;
+			packedTime = timeValues[fieldIndex].get() + ((timeValues[fieldIndex + 2].get() & 0x0F) << 8);
 		} else {
 			packedTime = timeValues[fieldIndex + 1].get() + (timeValues[fieldIndex + 2].get() & 0xF0) << 4; 
 		}
