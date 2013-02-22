@@ -168,8 +168,10 @@ public class DailySummary1 extends Struct {
 	 * Time of High Average Wind Speed   15
 	 * Time of High Rain Rate            16
 	 * Time of High UV                   17
+	 * 
+	 * Unsigned values. There is no negative value in time!!!
 	 */
-	public final Signed8[] timeValues = array(new Signed8[27]);
+	public final Unsigned8[] timeValues = array(new Unsigned8[27]);
 	
 	/*
 	 * We set the byte order for this struct to LITTLE ENDIAN.
