@@ -85,7 +85,16 @@ public class DataConverterTest {
 	 */
 	@Test
 	public void testConvertTemperature() {
-		//fail("Not yet implemented");
+		// Check for correct null values if invalid value is passed.
+		assertNull(dataConverter.convertTemperature(Short.MIN_VALUE));
+		
+		// Check for correct value in imperial units.
+		assertEquals("The converted value does not match!", 50.5, dataConverter.convertTemperature((short) 50.5e1), 0.1);
+		
+		// Check for conversion to metric units.
+		assertEquals("The converted value does not match!", -21.4, dataConverterUnit.convertTemperature((short) -6.5e1), 0.1);
+		assertEquals("The converted value does not match!", 0, dataConverterUnit.convertTemperature((short) 32e1), 0.1);
+		assertEquals("The converted value does not match!", 36.7, dataConverterUnit.convertTemperature((short) 98e1), 0.1);
 	}
 
 	/**
@@ -93,7 +102,11 @@ public class DataConverterTest {
 	 */
 	@Test
 	public void testConvertHumidity() {
-		//fail("Not yet implemented");
+		// Check for correct null values if invalid value is passed.
+		assertNull(dataConverter.convertHumidity(Short.MIN_VALUE));
+		
+		// Check for correct value in metric units.
+		assertEquals("The converted value does not match!", 51, dataConverter.convertHumidity((short) 50.9e1), 0.1);
 	}
 
 	/**
@@ -101,7 +114,16 @@ public class DataConverterTest {
 	 */
 	@Test
 	public void testConvertWindSpeed() {
-		//fail("Not yet implemented");
+		// Check for correct null values if invalid value is passed.
+		assertNull(dataConverter.convertWindSpeed(Short.MIN_VALUE));
+		
+		// Check for correct value in imperial units.
+		assertEquals("The converted value does not match!", 12.7, dataConverter.convertWindSpeed((short) 12.7e1), 0.1);
+		
+		// Check for conversion to metric units.
+		assertEquals("The converted value does not match!", 1, dataConverterUnit.convertWindSpeed((short) 2.2e1), 0.1);
+		assertEquals("The converted value does not match!", 5, dataConverterUnit.convertWindSpeed((short) 11.2e1), 0.1);
+		assertEquals("The converted value does not match!", 15, dataConverterUnit.convertWindSpeed((short) 33.6e1), 0.1);
 	}
 
 	/**
@@ -109,15 +131,12 @@ public class DataConverterTest {
 	 */
 	@Test
 	public void testConvertWindDirection() {
-		//fail("Not yet implemented");
-	}
-
-	/**
-	 * Test method for {@link data.DataConverter#convertRainRate(java.lang.Short)}.
-	 */
-	@Test
-	public void testConvertRainRate() {
-		//fail("Not yet implemented");
+		// Check for correct null values if invalid value is passed.
+		assertNull(dataConverter.convertWindDirection((short) 255));
+		
+		// Check for correct value in metric units.
+		assertEquals("The converted value does not match!", 0, dataConverter.convertWindDirection((short) 0), 0.1);
+		assertEquals("The converted value does not match!", 157.5, dataConverter.convertWindDirection((short) 7), 0.1);
 	}
 
 	/**
@@ -125,7 +144,11 @@ public class DataConverterTest {
 	 */
 	@Test
 	public void testConvertUV() {
-		//fail("Not yet implemented");
+		// Check for correct null values if invalid value is passed.
+		assertNull(dataConverter.convertUV(Short.MIN_VALUE));
+		
+		// Check for correct value in metric units.
+		assertEquals("The converted value does not match!", 5, dataConverter.convertUV((short) 5e1), 0.1);
 	}
 
 	/**
@@ -133,7 +156,15 @@ public class DataConverterTest {
 	 */
 	@Test
 	public void testConvertSolarEnergy() {
-		//fail("Not yet implemented");
+		// Check for correct null values if invalid value is passed.
+		assertNull(dataConverter.convertSolarEnergy(Short.MIN_VALUE));
+		
+		// Check for correct value in imperial units.
+		assertEquals("The converted value does not match!", 1, dataConverter.convertSolarEnergy((short) 1e1), 0.1);
+		
+		// Check for conversion to metric units.
+		assertEquals("The converted value does not match!", 41840, dataConverterUnit.convertSolarEnergy((short) 1e1), 0.1);
+		assertEquals("The converted value does not match!", 104600, dataConverterUnit.convertSolarEnergy((short) 2.5e1), 0.1);
+		assertEquals("The converted value does not match!", 209200, dataConverterUnit.convertSolarEnergy((short) 5e1), 0.1);
 	}
-
 }
