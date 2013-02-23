@@ -3,6 +3,9 @@
  */
 package data;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Pressure;
 import javax.measure.quantity.Temperature;
@@ -31,7 +34,6 @@ public class DataConverter {
 	static Unit<Length> INCH_MILI = SI.MILLI(NonSI.INCH);
 	static Unit<Length> KILOMETER = SI.KILOMETER;
 	static Unit<Length> MILE_DECI = SI.DECI(NonSI.MILE);
-	
 	
 	/**
 	 * 
@@ -111,10 +113,10 @@ public class DataConverter {
 	}
 	
 	/**
-	 * 
+	 * Converting temperature from deci fahrenheit to celsius.
 	 * 
 	 * @param temperature
-	 * @return
+	 * @return Converted temperature
 	 */
 	public Double convertTemperature(Short temperature) {
 		if (temperature == Short.MIN_VALUE) {
@@ -125,29 +127,35 @@ public class DataConverter {
 				// Conversion from imperial unit (fahrenheti deci) to metric units (celsius).
 				return FAHRENHEIT_DECI.getConverterTo(CELSIUS).convert(temperature);
 			} else {
-				// Only multiplication with 1e1.
-				return (double) (temperature * 1e1);
+				// Only division with 1e1.
+				return (double) (temperature / 1e1);
 			}
 		}
 	}
 	
 	/**
+	 * Converting humidity from deci humidity to integer humidity.
+	 * Humidity is always represented in procentage.
 	 * 
 	 * @param humidity
-	 * @return
+	 * @return Converted humidity
 	 */
 	public Integer convertHumidity(Short humidity) {
 		if (humidity == Short.MIN_VALUE) {
 			return null;
 		} else {
-			return humidity * 10;
+			// Round to nearest integer.
+			BigDecimal roundedHumidity = new BigDecimal((double) humidity / 10);
+			roundedHumidity = roundedHumidity.setScale(0, RoundingMode.HALF_UP);
+			return roundedHumidity.intValue();
 		}
 	}
 	
 	/**
+	 * Converting wind speed of tenths mile per hour to meters per second.
 	 * 
 	 * @param windSpeed
-	 * @return
+	 * @return Converted wind speed
 	 */
 	public Double convertWindSpeed(Short windSpeed) {
 		if (windSpeed == Short.MIN_VALUE) {
@@ -156,21 +164,23 @@ public class DataConverter {
 			// Is unit conversion enabled?
 			if (this.unit) {
 				// Conversion from imperial unit (mph deci) to metric units (m/s).
-				return FAHRENHEIT_DECI.getConverterTo(MPS).convert(windSpeed);
+				return MPH_DECI.getConverterTo(MPS).convert(windSpeed);
 			} else {
-				// Only multiplication with 1e1.
-				return (double) (windSpeed * 1e1);
+				// Only division with 1e1.
+				return (double) (windSpeed / 1e1);
 			}
 		}
 	}
 	
 	/**
+	 * Converting wind direction code (0 - 15) to wind direction in degrees.
 	 * 
 	 * @param windDirection
-	 * @return
+	 * @return converted wind direction
 	 */
 	public Double convertWindDirection(Short windDirection) {
-		// If wind direction is 255 then it means that the windspeed was 0.
+		// If wind direction is 255 then it means that the wind 
+		// speed was 0 and direction is undefined.
 		if (windDirection == 255) {
 			return null;
 		} else {
@@ -180,49 +190,25 @@ public class DataConverter {
 	}
 	
 	/**
-	 * 
-	 * @param rainRate
-	 * @return
-	 */
-	public Double convertRainRate(Short rainRate) {
-		if (rainRate == Short.MIN_VALUE) {
-			return null;
-		} else {
-			// Is unit conversion enabled?
-			if (this.unit) {
-				// Conversion from imperial unit (inch/hr centi) to metric units (mm/hr).
-				return INCH_MILI.getConverterTo(MILIMETER).convert(rainRate);
-			} else {
-				// Only multiplication with 1e3.
-				return (double) (rainRate * 1e3);
-			}
-		}
-	}
-	
-	/**
+	 * Conversion from tenths of an UV index to UV index.
 	 * 
 	 * @param UV
-	 * @return
+	 * @return converted UV index
 	 */
 	public Double convertUV(Short UV) {
 		if (UV == Short.MIN_VALUE) {
 			return null;
 		} else {
-			// Is unit conversion enabled?
-			if (this.unit) {
-				// Currently no conversion available.
-				return UV * 1e1;
-			} else {
-				// Only multiplication with 1e1.
-				return UV * 1e1;
-			}
+			// No conversion only division.
+			return UV / 1e1;
 		}
 	}
 	
 	/**
+	 * Conversion from Ly (Langley) to J/m^2.
 	 * 
 	 * @param solarEnergy
-	 * @return
+	 * @return converted solar energy
 	 */
 	public Double convertSolarEnergy(Short solarEnergy) {
 		if (solarEnergy == Short.MIN_VALUE) {
@@ -230,11 +216,11 @@ public class DataConverter {
 		} else {
 			// Is unit conversion enabled?
 			if (this.unit) {
-				// Currently no conversion available.
-				return solarEnergy * 1e1;
+				// 1 Ly = 41840 J/m^2
+				return (double) (solarEnergy * 4184);
 			} else {
-				// Only multiplication with 1e1.
-				return solarEnergy * 1e1;
+				// Only division with 1e1.
+				return solarEnergy / 1e1;
 			}
 		}
 	}
