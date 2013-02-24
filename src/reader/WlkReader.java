@@ -155,7 +155,7 @@ public class WlkReader {
 			
 			// Check whether date time of the specified date time is before date time
 			// parsed from file name. If the date time is not set then we read all the files.
-			if (this.dateTime == null || fileDateTime.isBefore(dateTime)) {		
+			if (this.dateTime == null || this.dateTime.isBefore(fileDateTime)) {		
 				// The offset of daily summary record 1.
 				int offset = 0;
 				
@@ -194,7 +194,13 @@ public class WlkReader {
 					// Increment number of days gone by in file.
 					day++;
 					
-					if (dayIndex.recordsInDay.get() > 0) {
+					if ((this.dateTime == null && dayIndex.recordsInDay.get() > 0) || (this.dateTime != null && 
+							dayIndex.recordsInDay.get() > 0 && this.dateTime.isBefore(
+								new LocalDate(fileDateTime.minusMonths(1).getYear(), 
+									fileDateTime.minusMonths(1).getMonthOfYear(), 
+								day).plusDays(1).toDateTimeAtStartOfDay()
+							))
+						) {
 						/*
 						 * First we compute offset. We need to add 212, 
 						 * because the first 212B is used by header. The multiplication
@@ -239,7 +245,7 @@ public class WlkReader {
 							dailySummary.setMaxAvg10MinWindSpeed(dataConverter.convertWindSpeed(dailySummary1.hi10MinSpeed.get()));
 							dailySummary.setMaxAvg10MinWindSpeedDir(dataConverter.convertWindDirection(dailySummary1.hi10MinDir.get()));
 							dailySummary.setTimeMaxAvg10MinWindSpeed(this.computeTimeValue(15, dailySummary1.timeValues));
-							dailySummary.setMaxRainRate(dataConverter.convertRainRate(dailySummary1.hiRainRate.get()));
+							dailySummary.setMaxRainRate(dataConverter.convertPrecipitation(dailySummary1.hiRainRate.get()));
 							dailySummary.setTimeMaxRainRate(this.computeTimeValue(16, dailySummary1.timeValues));
 							dailySummary.setMaxUV(dataConverter.convertUV(dailySummary1.hiUV.get()));
 							dailySummary.setTimeMaxUV(this.computeTimeValue(17, dailySummary1.timeValues));
@@ -279,28 +285,28 @@ public class WlkReader {
 								dailySummary.setNumWindPackets(dailySummary2.numWindPackets.get());
 								dailySummary.setDailySolarEnergy(dataConverter.convertSolarEnergy(dailySummary2.dailySolarEnergy.get()));
 								dailySummary.setMinSunLight((int) dailySummary2.minSunLight.get());
-								dailySummary.setDailyETTotal(dataConverter.convertRainRate(dailySummary2.dailyETTotal.get()));
+								dailySummary.setDailyETTotal(dataConverter.convertPrecipitation(dailySummary2.dailyETTotal.get()));
 								dailySummary.setIntegratedHeatDD65(dataConverter.convertTemperature(dailySummary2.integratedHeatDD65.get()));
 								dailySummary.setWindDirectionDistribution(this.computeWindDirectionDistribution(dailySummary2.dirBins));
 								dailySummary.setIntegratedCoolDD65(dataConverter.convertTemperature(dailySummary2.integratedCoolDD65.get()));
 												
 								// Maximum values.
 								dailySummary.setMaxSolar((double) dailySummary2.hiSolar.get());
-								//dailySummary.setTimeMaxSolar(this.computeTimeValue(0, dailySummary2.timeValues));
+								dailySummary.setTimeMaxSolar(this.computeTimeValue(0, dailySummary2.timeValues));
 								dailySummary.setMaxHeatIndex(dataConverter.convertTemperature(dailySummary2.hiHeat.get()));
-								//dailySummary.setTimeMaxSolar(this.computeTimeValue(1, dailySummary2.timeValues));
+								dailySummary.setTimeMaxSolar(this.computeTimeValue(1, dailySummary2.timeValues));
 								dailySummary.setMaxTHSWIndex(dataConverter.convertTemperature(dailySummary2.hiTHSW.get()));
-								//dailySummary.setTimeMaxTHSWIndex(this.computeTimeValue(3, dailySummary2.timeValues));
+								dailySummary.setTimeMaxTHSWIndex(this.computeTimeValue(3, dailySummary2.timeValues));
 								dailySummary.setMaxTHWIndex(dataConverter.convertTemperature(dailySummary2.hiTHW.get()));
-								//dailySummary.setTimeMaxTHWIndex(this.computeTimeValue(5, dailySummary2.timeValues));
+								dailySummary.setTimeMaxTHWIndex(this.computeTimeValue(5, dailySummary2.timeValues));
 								
 								// Minimum values.
 								dailySummary.setMinHeatIndex(dataConverter.convertTemperature(dailySummary2.lowHeat.get()));
-								//dailySummary.setTimeMinHeatIndex(this.computeTimeValue(2, dailySummary2.timeValues));
+								dailySummary.setTimeMinHeatIndex(this.computeTimeValue(2, dailySummary2.timeValues));
 								dailySummary.setMinTHSWIndex(dataConverter.convertTemperature(dailySummary2.lowTHSW.get()));
-								//dailySummary.setTimeMinTHSWIndex(this.computeTimeValue(4, dailySummary2.timeValues));
+								dailySummary.setTimeMinTHSWIndex(this.computeTimeValue(4, dailySummary2.timeValues));
 								dailySummary.setMinTHWIndex(dataConverter.convertTemperature(dailySummary2.lowTHW.get()));
-								//dailySummary.setTimeMinTHWIndex(this.computeTimeValue(6, dailySummary2.timeValues));
+								dailySummary.setTimeMinTHWIndex(this.computeTimeValue(6, dailySummary2.timeValues));
 								
 								// Avg values.
 								dailySummary.setAvgHeatIndex(dataConverter.convertTemperature(dailySummary2.avgHeat.get()));
@@ -341,7 +347,7 @@ public class WlkReader {
 										}
 										
 										// Is the date of the record after specified date time.
-										if (dateRecord.isAfter(this.dateTime)) {
+										if (this.dateTime == null || dateRecord.isAfter(this.dateTime)) {
 											// Create a new WeatherDataRecord.
 											data.WeatherDataRecord weatherRecord = new data.WeatherDataRecord();
 											
@@ -358,7 +364,7 @@ public class WlkReader {
 											weatherRecord.setOutHumidity(dataConverter.convertHumidity(weatherDataRecord.outsideHum.get()));	
 											weatherRecord.setInHumidity(dataConverter.convertHumidity(weatherDataRecord.insideHum.get()));
 											weatherRecord.setPrecipitation(dataConverter.convertPrecipitation((short) weatherDataRecord.rain.get()));
-											weatherRecord.setMaxPrecipitationRate(dataConverter.convertRainRate(weatherDataRecord.hiRainRate.get()));
+											weatherRecord.setMaxPrecipitationRate(dataConverter.convertPrecipitation(weatherDataRecord.hiRainRate.get()));
 											weatherRecord.setWindSpeed(dataConverter.convertWindSpeed(weatherDataRecord.windSpeed.get()));
 											weatherRecord.setMaxWindSpeed(dataConverter.convertWindSpeed(weatherDataRecord.hiWindSpeed.get()));
 											weatherRecord.setWindDirection(dataConverter.convertWindDirection((short) weatherDataRecord.windDirection.get()));
@@ -379,7 +385,9 @@ public class WlkReader {
 											
 											// Setting the date and time of the user input record to the
 											// date time of the last record.
-											this.dateTime = dateRecord;
+											if (this.dateTime != null) {
+												this.dateTime = dateRecord;
+											}
 											
 											// Storing it into the list.
 											weatherDataRecordList.add(weatherRecord);
@@ -475,26 +483,30 @@ public class WlkReader {
 		
 		// If index is even.
 		if (index % 2 == 0) {
-			int time1 = timeValues[fieldIndex].get();
-			int time2 = timeValues[fieldIndex + 2].get();
-			time2 &= 0x0F;
-			time2 <<= 8;
 			packedTime = timeValues[fieldIndex].get() + ((timeValues[fieldIndex + 2].get() & 0x0F) << 8);
 		} else {
-			packedTime = timeValues[fieldIndex + 1].get() + (timeValues[fieldIndex + 2].get() & 0xF0) << 4; 
+			packedTime = timeValues[fieldIndex + 1].get() + ((timeValues[fieldIndex + 2].get() & 0xF0) << 4); 
 		}
 		
 		// A value of 0x0FFF or 0x07FF indicates no data available (i. e. invalid data).
-		if (packedTime == 0x0FFF || packedTime == 0x07FF) {
+		if (packedTime == 0x0FFF || packedTime == 0x07FF || packedTime == 0x1000 || packedTime == 0x0800) {
 			return null;
 		} else {
 			// We get the hours by dividning packed time with 60 and rounding it
 			// down to the nearest integer value.
 			short hourOfDay = (short) Math.floor(packedTime / 60);
 			
+			// Number of minutes is always between 1 and 1440. If extreme is recorded
+			// at 00:00 it means it was recorded at the end of day (23:59 - 00:00). So
+			// 1 means 00:00 - 00:01 and 1440 means 23:59 - 00:00.
+			if (hourOfDay == 24) {
+				hourOfDay = 0;
+			}
+			
 			// We get the minutes by computing the reminder when dividing with 60.
 			short minuteOfHour = (short) (packedTime % 60);
 			
+			// Return computed time.
 			return new LocalTime(hourOfDay, minuteOfHour);
 		}
 	}
@@ -509,7 +521,7 @@ public class WlkReader {
 		// If index is even.
 		Integer[] windDirectionDistribution = new Integer[16];
 		
-		for (int i = 0; i <= 16; i++) {
+		for (int i = 0; i < 16; i++) {
 			// Compute field index from index. Integer division (rounded down).
 			int fieldIndex = (int) ((i / 2) * 3);
 			
@@ -517,9 +529,9 @@ public class WlkReader {
 			int minutes;
 			
 			if (i % 2 == 0) {
-				minutes = direction[fieldIndex].get() + (direction[fieldIndex + 2].get() & 0x0F) << 8;
+				minutes = direction[fieldIndex].get() + ((direction[fieldIndex + 2].get() & 0x0F) << 8);
 			} else {
-				minutes = direction[fieldIndex + 1].get() + (direction[fieldIndex + 2].get() & 0xF0) << 4; 
+				minutes = direction[fieldIndex + 1].get() + ((direction[fieldIndex + 2].get() & 0xF0) << 4); 
 			}
 			
 			// A value of 0x0FFF or 0x07FF indicates no data available (i. e. invalid data).
