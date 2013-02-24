@@ -104,7 +104,7 @@ public class DailySummary2 extends Struct {
 	 * Time of Low Outside Wet Bulb Temp  8
 	 * (Time value 9 is not used)
 	 */
-	public final Signed8[] timeValues = array(new Signed8[15]);
+	public final Unsigned8[] timeValues = array(new Unsigned8[15]);
 	
 	// Integrated Cooling Degree Days (65F threshold)
 	// represented in tenths of a degree F - Day.
