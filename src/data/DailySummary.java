@@ -4,9 +4,13 @@ import org.joda.time.LocalTime;
 import org.joda.time.LocalDate;
 
 /**
+ * DailySummary class is an abstraction for DailySummary1 and DailySummary2. The
+ * data is already formatted to user specified unit (fahrenheit or celsius) and
+ * checked for undefined values.
  * 
- * @author Jernej
- *
+ * @author Jernej Jerin <jernej.jerin@gmail.com>
+ * @version %I%, %G%
+ * @since 1.0
  */
 public class DailySummary {
 	// Properties.
@@ -22,7 +26,7 @@ public class DailySummary {
 	private Double integratedHeatDD65;
 	private Integer[] windDirectionDistribution = new Integer[16];
 	private Double integratedCoolDD65;
-	
+
 	// Maximum values.
 	private Double maxOutTemp;
 	private LocalTime timeMaxOutTemp;
@@ -56,7 +60,7 @@ public class DailySummary {
 	private LocalTime timeMaxTHSWIndex;
 	private Double maxTHWIndex;
 	private LocalTime timeMaxTHWIndex;
-	
+
 	// Minimum values.
 	private Double minOutTemp;
 	private LocalTime timeMinOutTemp;
@@ -78,7 +82,7 @@ public class DailySummary {
 	private LocalTime timeMinTHSWIndex;
 	private Double minTHWIndex;
 	private LocalTime timeMinTHWIndex;
-	
+
 	// Average values.
 	private Double avgOutTemp;
 	private Double avgInTemp;
@@ -88,15 +92,13 @@ public class DailySummary {
 	private Double avgPressure;
 	private Double avgWindSpeed;
 	private Double avgHeatIndex;
-	
+
 	/**
 	 * Empty constructor.
 	 */
 	public DailySummary() {
-		
+
 	}
-	
-	
 
 	/**
 	 * @param date
@@ -284,7 +286,8 @@ public class DailySummary {
 	}
 
 	/**
-	 * @param date the date to set
+	 * @param date
+	 *            the date to set
 	 */
 	public void setDate(LocalDate date) {
 		this.date = date;
@@ -298,7 +301,8 @@ public class DailySummary {
 	}
 
 	/**
-	 * @param dataSpan the dataSpan to set
+	 * @param dataSpan
+	 *            the dataSpan to set
 	 */
 	public void setDataSpan(Integer dataSpan) {
 		this.dataSpan = dataSpan;
@@ -312,7 +316,8 @@ public class DailySummary {
 	}
 
 	/**
-	 * @param windRun the windRun to set
+	 * @param windRun
+	 *            the windRun to set
 	 */
 	public void setWindRun(Double windRun) {
 		this.windRun = windRun;
@@ -326,7 +331,8 @@ public class DailySummary {
 	}
 
 	/**
-	 * @param dailyRain the dailyRain to set
+	 * @param dailyRain
+	 *            the dailyRain to set
 	 */
 	public void setDailyRain(Double dailyRain) {
 		this.dailyRain = dailyRain;
@@ -340,7 +346,8 @@ public class DailySummary {
 	}
 
 	/**
-	 * @param dailyUVDose the dailyUVDose to set
+	 * @param dailyUVDose
+	 *            the dailyUVDose to set
 	 */
 	public void setDailyUVDose(Double dailyUVDose) {
 		this.dailyUVDose = dailyUVDose;
@@ -354,7 +361,8 @@ public class DailySummary {
 	}
 
 	/**
-	 * @param numWindPackets the numWindPackets to set
+	 * @param numWindPackets
+	 *            the numWindPackets to set
 	 */
 	public void setNumWindPackets(Integer numWindPackets) {
 		this.numWindPackets = numWindPackets;
@@ -368,7 +376,8 @@ public class DailySummary {
 	}
 
 	/**
-	 * @param dailySolarEnergy the dailySolarEnergy to set
+	 * @param dailySolarEnergy
+	 *            the dailySolarEnergy to set
 	 */
 	public void setDailySolarEnergy(Double dailySolarEnergy) {
 		this.dailySolarEnergy = dailySolarEnergy;
@@ -382,7 +391,8 @@ public class DailySummary {
 	}
 
 	/**
-	 * @param minSunLight the minSunLight to set
+	 * @param minSunLight
+	 *            the minSunLight to set
 	 */
 	public void setMinSunLight(Integer minSunLight) {
 		this.minSunLight = minSunLight;
@@ -396,7 +406,8 @@ public class DailySummary {
 	}
 
 	/**
-	 * @param dailyETTotal the dailyETTotal to set
+	 * @param dailyETTotal
+	 *            the dailyETTotal to set
 	 */
 	public void setDailyETTotal(Double dailyETTotal) {
 		this.dailyETTotal = dailyETTotal;
@@ -410,7 +421,8 @@ public class DailySummary {
 	}
 
 	/**
-	 * @param integratedHeatDD65 the integratedHeatDD65 to set
+	 * @param integratedHeatDD65
+	 *            the integratedHeatDD65 to set
 	 */
 	public void setIntegratedHeatDD65(Double integratedHeatDD65) {
 		this.integratedHeatDD65 = integratedHeatDD65;
@@ -424,12 +436,13 @@ public class DailySummary {
 	}
 
 	/**
-	 * @param windDirectionDistribution the windDirectionDistribution to set
+	 * @param windDirectionDistribution
+	 *            the windDirectionDistribution to set
 	 */
 	public void setWindDirectionDistribution(Integer[] windDirectionDistribution) {
 		this.windDirectionDistribution = windDirectionDistribution;
 	}
-	
+
 	/**
 	 * @return the integratedCoolDD65
 	 */
@@ -438,7 +451,8 @@ public class DailySummary {
 	}
 
 	/**
-	 * @param integratedCoolDD65 the integratedCoolDD65 to set
+	 * @param integratedCoolDD65
+	 *            the integratedCoolDD65 to set
 	 */
 	public void setIntegratedCoolDD65(Double integratedCoolDD65) {
 		this.integratedCoolDD65 = integratedCoolDD65;
@@ -452,7 +466,8 @@ public class DailySummary {
 	}
 
 	/**
-	 * @param maxOutTemp the maxOutTemp to set
+	 * @param maxOutTemp
+	 *            the maxOutTemp to set
 	 */
 	public void setMaxOutTemp(Double maxOutTemp) {
 		this.maxOutTemp = maxOutTemp;
@@ -466,7 +481,8 @@ public class DailySummary {
 	}
 
 	/**
-	 * @param timeMaxOutTemp the timeMaxOutTemp to set
+	 * @param timeMaxOutTemp
+	 *            the timeMaxOutTemp to set
 	 */
 	public void setTimeMaxOutTemp(LocalTime timeMaxOutTemp) {
 		this.timeMaxOutTemp = timeMaxOutTemp;
@@ -480,7 +496,8 @@ public class DailySummary {
 	}
 
 	/**
-	 * @param maxInTemp the maxInTemp to set
+	 * @param maxInTemp
+	 *            the maxInTemp to set
 	 */
 	public void setMaxInTemp(Double maxInTemp) {
 		this.maxInTemp = maxInTemp;
@@ -494,7 +511,8 @@ public class DailySummary {
 	}
 
 	/**
-	 * @param timeMaxInTemp the timeMaxInTemp to set
+	 * @param timeMaxInTemp
+	 *            the timeMaxInTemp to set
 	 */
 	public void setTimeMaxInTemp(LocalTime timeMaxInTemp) {
 		this.timeMaxInTemp = timeMaxInTemp;
@@ -508,7 +526,8 @@ public class DailySummary {
 	}
 
 	/**
-	 * @param maxWindChill the maxWindChill to set
+	 * @param maxWindChill
+	 *            the maxWindChill to set
 	 */
 	public void setMaxWindChill(Double maxWindChill) {
 		this.maxWindChill = maxWindChill;
@@ -522,7 +541,8 @@ public class DailySummary {
 	}
 
 	/**
-	 * @param timeMaxWindChill the timeMaxWindChill to set
+	 * @param timeMaxWindChill
+	 *            the timeMaxWindChill to set
 	 */
 	public void setTimeMaxWindChill(LocalTime timeMaxWindChill) {
 		this.timeMaxWindChill = timeMaxWindChill;
@@ -536,7 +556,8 @@ public class DailySummary {
 	}
 
 	/**
-	 * @param maxDewPoint the maxDewPoint to set
+	 * @param maxDewPoint
+	 *            the maxDewPoint to set
 	 */
 	public void setMaxDewPoint(Double maxDewPoint) {
 		this.maxDewPoint = maxDewPoint;
@@ -550,7 +571,8 @@ public class DailySummary {
 	}
 
 	/**
-	 * @param timeMaxDewPoint the timeMaxDewPoint to set
+	 * @param timeMaxDewPoint
+	 *            the timeMaxDewPoint to set
 	 */
 	public void setTimeMaxDewPoint(LocalTime timeMaxDewPoint) {
 		this.timeMaxDewPoint = timeMaxDewPoint;
@@ -564,7 +586,8 @@ public class DailySummary {
 	}
 
 	/**
-	 * @param maxOutHum the maxOutHum to set
+	 * @param maxOutHum
+	 *            the maxOutHum to set
 	 */
 	public void setMaxOutHum(Integer maxOutHum) {
 		this.maxOutHum = maxOutHum;
@@ -578,7 +601,8 @@ public class DailySummary {
 	}
 
 	/**
-	 * @param timeMaxOutHum the timeMaxOutHum to set
+	 * @param timeMaxOutHum
+	 *            the timeMaxOutHum to set
 	 */
 	public void setTimeMaxOutHum(LocalTime timeMaxOutHum) {
 		this.timeMaxOutHum = timeMaxOutHum;
@@ -592,7 +616,8 @@ public class DailySummary {
 	}
 
 	/**
-	 * @param maxInHum the maxInHum to set
+	 * @param maxInHum
+	 *            the maxInHum to set
 	 */
 	public void setMaxInHum(Integer maxInHum) {
 		this.maxInHum = maxInHum;
@@ -606,7 +631,8 @@ public class DailySummary {
 	}
 
 	/**
-	 * @param timeMaxInHum the timeMaxInHum to set
+	 * @param timeMaxInHum
+	 *            the timeMaxInHum to set
 	 */
 	public void setTimeMaxInHum(LocalTime timeMaxInHum) {
 		this.timeMaxInHum = timeMaxInHum;
@@ -620,7 +646,8 @@ public class DailySummary {
 	}
 
 	/**
-	 * @param maxPressure the maxPressure to set
+	 * @param maxPressure
+	 *            the maxPressure to set
 	 */
 	public void setMaxPressure(Double maxPressure) {
 		this.maxPressure = maxPressure;
@@ -634,7 +661,8 @@ public class DailySummary {
 	}
 
 	/**
-	 * @param timeMaxPressure the timeMaxPressure to set
+	 * @param timeMaxPressure
+	 *            the timeMaxPressure to set
 	 */
 	public void setTimeMaxPressure(LocalTime timeMaxPressure) {
 		this.timeMaxPressure = timeMaxPressure;
@@ -648,7 +676,8 @@ public class DailySummary {
 	}
 
 	/**
-	 * @param maxWindSpeed the maxWindSpeed to set
+	 * @param maxWindSpeed
+	 *            the maxWindSpeed to set
 	 */
 	public void setMaxWindSpeed(Double maxWindSpeed) {
 		this.maxWindSpeed = maxWindSpeed;
@@ -662,7 +691,8 @@ public class DailySummary {
 	}
 
 	/**
-	 * @param maxWindSpeedDir the maxWindSpeedDir to set
+	 * @param maxWindSpeedDir
+	 *            the maxWindSpeedDir to set
 	 */
 	public void setMaxWindSpeedDir(Double maxWindSpeedDir) {
 		this.maxWindSpeedDir = maxWindSpeedDir;
@@ -676,7 +706,8 @@ public class DailySummary {
 	}
 
 	/**
-	 * @param timeMaxWindSpeed the timeMaxWindSpeed to set
+	 * @param timeMaxWindSpeed
+	 *            the timeMaxWindSpeed to set
 	 */
 	public void setTimeMaxWindSpeed(LocalTime timeMaxWindSpeed) {
 		this.timeMaxWindSpeed = timeMaxWindSpeed;
@@ -690,7 +721,8 @@ public class DailySummary {
 	}
 
 	/**
-	 * @param maxAvg10MinWindSpeed the maxAvg10MinWindSpeed to set
+	 * @param maxAvg10MinWindSpeed
+	 *            the maxAvg10MinWindSpeed to set
 	 */
 	public void setMaxAvg10MinWindSpeed(Double maxAvg10MinWindSpeed) {
 		this.maxAvg10MinWindSpeed = maxAvg10MinWindSpeed;
@@ -704,7 +736,8 @@ public class DailySummary {
 	}
 
 	/**
-	 * @param maxAvg10MinWindSpeedDir the maxAvg10MinWindSpeedDir to set
+	 * @param maxAvg10MinWindSpeedDir
+	 *            the maxAvg10MinWindSpeedDir to set
 	 */
 	public void setMaxAvg10MinWindSpeedDir(Double maxAvg10MinWindSpeedDir) {
 		this.maxAvg10MinWindSpeedDir = maxAvg10MinWindSpeedDir;
@@ -718,7 +751,8 @@ public class DailySummary {
 	}
 
 	/**
-	 * @param timeMaxAvg10MinWindSpeed the timeMaxAvg10MinWindSpeed to set
+	 * @param timeMaxAvg10MinWindSpeed
+	 *            the timeMaxAvg10MinWindSpeed to set
 	 */
 	public void setTimeMaxAvg10MinWindSpeed(LocalTime timeMaxAvg10MinWindSpeed) {
 		this.timeMaxAvg10MinWindSpeed = timeMaxAvg10MinWindSpeed;
@@ -732,7 +766,8 @@ public class DailySummary {
 	}
 
 	/**
-	 * @param maxRainRate the maxRainRate to set
+	 * @param maxRainRate
+	 *            the maxRainRate to set
 	 */
 	public void setMaxRainRate(Double maxRainRate) {
 		this.maxRainRate = maxRainRate;
@@ -746,7 +781,8 @@ public class DailySummary {
 	}
 
 	/**
-	 * @param timeMaxRainRate the timeMaxRainRate to set
+	 * @param timeMaxRainRate
+	 *            the timeMaxRainRate to set
 	 */
 	public void setTimeMaxRainRate(LocalTime timeMaxRainRate) {
 		this.timeMaxRainRate = timeMaxRainRate;
@@ -760,7 +796,8 @@ public class DailySummary {
 	}
 
 	/**
-	 * @param maxUV the maxUV to set
+	 * @param maxUV
+	 *            the maxUV to set
 	 */
 	public void setMaxUV(Double maxUV) {
 		this.maxUV = maxUV;
@@ -774,7 +811,8 @@ public class DailySummary {
 	}
 
 	/**
-	 * @param timeMaxUV the timeMaxUV to set
+	 * @param timeMaxUV
+	 *            the timeMaxUV to set
 	 */
 	public void setTimeMaxUV(LocalTime timeMaxUV) {
 		this.timeMaxUV = timeMaxUV;
@@ -788,7 +826,8 @@ public class DailySummary {
 	}
 
 	/**
-	 * @param maxSolar the maxSolar to set
+	 * @param maxSolar
+	 *            the maxSolar to set
 	 */
 	public void setMaxSolar(Double maxSolar) {
 		this.maxSolar = maxSolar;
@@ -802,7 +841,8 @@ public class DailySummary {
 	}
 
 	/**
-	 * @param timeMaxSolar the timeMaxSolar to set
+	 * @param timeMaxSolar
+	 *            the timeMaxSolar to set
 	 */
 	public void setTimeMaxSolar(LocalTime timeMaxSolar) {
 		this.timeMaxSolar = timeMaxSolar;
@@ -816,7 +856,8 @@ public class DailySummary {
 	}
 
 	/**
-	 * @param maxHeatIndex the maxHeatIndex to set
+	 * @param maxHeatIndex
+	 *            the maxHeatIndex to set
 	 */
 	public void setMaxHeatIndex(Double maxHeatIndex) {
 		this.maxHeatIndex = maxHeatIndex;
@@ -830,7 +871,8 @@ public class DailySummary {
 	}
 
 	/**
-	 * @param timeMaxHeatIndex the timeMaxHeatIndex to set
+	 * @param timeMaxHeatIndex
+	 *            the timeMaxHeatIndex to set
 	 */
 	public void setTimeMaxHeatIndex(LocalTime timeMaxHeatIndex) {
 		this.timeMaxHeatIndex = timeMaxHeatIndex;
@@ -844,7 +886,8 @@ public class DailySummary {
 	}
 
 	/**
-	 * @param maxTHSWIndex the maxTHSWIndex to set
+	 * @param maxTHSWIndex
+	 *            the maxTHSWIndex to set
 	 */
 	public void setMaxTHSWIndex(Double maxTHSWIndex) {
 		this.maxTHSWIndex = maxTHSWIndex;
@@ -858,7 +901,8 @@ public class DailySummary {
 	}
 
 	/**
-	 * @param timeMaxTHSWIndex the timeMaxTHSWIndex to set
+	 * @param timeMaxTHSWIndex
+	 *            the timeMaxTHSWIndex to set
 	 */
 	public void setTimeMaxTHSWIndex(LocalTime timeMaxTHSWIndex) {
 		this.timeMaxTHSWIndex = timeMaxTHSWIndex;
@@ -872,7 +916,8 @@ public class DailySummary {
 	}
 
 	/**
-	 * @param maxTHWIndex the maxTHWIndex to set
+	 * @param maxTHWIndex
+	 *            the maxTHWIndex to set
 	 */
 	public void setMaxTHWIndex(Double maxTHWIndex) {
 		this.maxTHWIndex = maxTHWIndex;
@@ -886,7 +931,8 @@ public class DailySummary {
 	}
 
 	/**
-	 * @param timeMaxTHWIndex the timeMaxTHWIndex to set
+	 * @param timeMaxTHWIndex
+	 *            the timeMaxTHWIndex to set
 	 */
 	public void setTimeMaxTHWIndex(LocalTime timeMaxTHWIndex) {
 		this.timeMaxTHWIndex = timeMaxTHWIndex;
@@ -900,7 +946,8 @@ public class DailySummary {
 	}
 
 	/**
-	 * @param minOutTemp the minOutTemp to set
+	 * @param minOutTemp
+	 *            the minOutTemp to set
 	 */
 	public void setMinOutTemp(Double minOutTemp) {
 		this.minOutTemp = minOutTemp;
@@ -914,7 +961,8 @@ public class DailySummary {
 	}
 
 	/**
-	 * @param timeMinOutTemp the timeMinOutTemp to set
+	 * @param timeMinOutTemp
+	 *            the timeMinOutTemp to set
 	 */
 	public void setTimeMinOutTemp(LocalTime timeMinOutTemp) {
 		this.timeMinOutTemp = timeMinOutTemp;
@@ -928,7 +976,8 @@ public class DailySummary {
 	}
 
 	/**
-	 * @param minInTemp the minInTemp to set
+	 * @param minInTemp
+	 *            the minInTemp to set
 	 */
 	public void setMinInTemp(Double minInTemp) {
 		this.minInTemp = minInTemp;
@@ -942,7 +991,8 @@ public class DailySummary {
 	}
 
 	/**
-	 * @param timeMinInTemp the timeMinInTemp to set
+	 * @param timeMinInTemp
+	 *            the timeMinInTemp to set
 	 */
 	public void setTimeMinInTemp(LocalTime timeMinInTemp) {
 		this.timeMinInTemp = timeMinInTemp;
@@ -956,7 +1006,8 @@ public class DailySummary {
 	}
 
 	/**
-	 * @param minWindChill the minWindChill to set
+	 * @param minWindChill
+	 *            the minWindChill to set
 	 */
 	public void setMinWindChill(Double minWindChill) {
 		this.minWindChill = minWindChill;
@@ -970,7 +1021,8 @@ public class DailySummary {
 	}
 
 	/**
-	 * @param timeMinWindChill the timeMinWindChill to set
+	 * @param timeMinWindChill
+	 *            the timeMinWindChill to set
 	 */
 	public void setTimeMinWindChill(LocalTime timeMinWindChill) {
 		this.timeMinWindChill = timeMinWindChill;
@@ -984,7 +1036,8 @@ public class DailySummary {
 	}
 
 	/**
-	 * @param minDewPoint the minDewPoint to set
+	 * @param minDewPoint
+	 *            the minDewPoint to set
 	 */
 	public void setMinDewPoint(Double minDewPoint) {
 		this.minDewPoint = minDewPoint;
@@ -998,7 +1051,8 @@ public class DailySummary {
 	}
 
 	/**
-	 * @param timeMinDewPoint the timeMinDewPoint to set
+	 * @param timeMinDewPoint
+	 *            the timeMinDewPoint to set
 	 */
 	public void setTimeMinDewPoint(LocalTime timeMinDewPoint) {
 		this.timeMinDewPoint = timeMinDewPoint;
@@ -1012,7 +1066,8 @@ public class DailySummary {
 	}
 
 	/**
-	 * @param minOutHum the minOutHum to set
+	 * @param minOutHum
+	 *            the minOutHum to set
 	 */
 	public void setMinOutHum(Integer minOutHum) {
 		this.minOutHum = minOutHum;
@@ -1026,7 +1081,8 @@ public class DailySummary {
 	}
 
 	/**
-	 * @param timeMinOutHum the timeMinOutHum to set
+	 * @param timeMinOutHum
+	 *            the timeMinOutHum to set
 	 */
 	public void setTimeMinOutHum(LocalTime timeMinOutHum) {
 		this.timeMinOutHum = timeMinOutHum;
@@ -1040,7 +1096,8 @@ public class DailySummary {
 	}
 
 	/**
-	 * @param minInHum the minInHum to set
+	 * @param minInHum
+	 *            the minInHum to set
 	 */
 	public void setMinInHum(Integer minInHum) {
 		this.minInHum = minInHum;
@@ -1054,7 +1111,8 @@ public class DailySummary {
 	}
 
 	/**
-	 * @param timeMinInHum the timeMinInHum to set
+	 * @param timeMinInHum
+	 *            the timeMinInHum to set
 	 */
 	public void setTimeMinInHum(LocalTime timeMinInHum) {
 		this.timeMinInHum = timeMinInHum;
@@ -1068,7 +1126,8 @@ public class DailySummary {
 	}
 
 	/**
-	 * @param minPressure the minPressure to set
+	 * @param minPressure
+	 *            the minPressure to set
 	 */
 	public void setMinPressure(Double minPressure) {
 		this.minPressure = minPressure;
@@ -1082,7 +1141,8 @@ public class DailySummary {
 	}
 
 	/**
-	 * @param timeMinPressure the timeMinPressure to set
+	 * @param timeMinPressure
+	 *            the timeMinPressure to set
 	 */
 	public void setTimeMinPressure(LocalTime timeMinPressure) {
 		this.timeMinPressure = timeMinPressure;
@@ -1096,7 +1156,8 @@ public class DailySummary {
 	}
 
 	/**
-	 * @param minHeatIndex the minHeatIndex to set
+	 * @param minHeatIndex
+	 *            the minHeatIndex to set
 	 */
 	public void setMinHeatIndex(Double minHeatIndex) {
 		this.minHeatIndex = minHeatIndex;
@@ -1110,7 +1171,8 @@ public class DailySummary {
 	}
 
 	/**
-	 * @param timeMinHeatIndex the timeMinHeatIndex to set
+	 * @param timeMinHeatIndex
+	 *            the timeMinHeatIndex to set
 	 */
 	public void setTimeMinHeatIndex(LocalTime timeMinHeatIndex) {
 		this.timeMinHeatIndex = timeMinHeatIndex;
@@ -1124,7 +1186,8 @@ public class DailySummary {
 	}
 
 	/**
-	 * @param minTHSWIndex the minTHSWIndex to set
+	 * @param minTHSWIndex
+	 *            the minTHSWIndex to set
 	 */
 	public void setMinTHSWIndex(Double minTHSWIndex) {
 		this.minTHSWIndex = minTHSWIndex;
@@ -1138,7 +1201,8 @@ public class DailySummary {
 	}
 
 	/**
-	 * @param timeMinTHSWIndex the timeMinTHSWIndex to set
+	 * @param timeMinTHSWIndex
+	 *            the timeMinTHSWIndex to set
 	 */
 	public void setTimeMinTHSWIndex(LocalTime timeMinTHSWIndex) {
 		this.timeMinTHSWIndex = timeMinTHSWIndex;
@@ -1152,7 +1216,8 @@ public class DailySummary {
 	}
 
 	/**
-	 * @param minTHWIndex the minTHWIndex to set
+	 * @param minTHWIndex
+	 *            the minTHWIndex to set
 	 */
 	public void setMinTHWIndex(Double minTHWIndex) {
 		this.minTHWIndex = minTHWIndex;
@@ -1166,7 +1231,8 @@ public class DailySummary {
 	}
 
 	/**
-	 * @param timeMinTHWIndex the timeMinTHWIndex to set
+	 * @param timeMinTHWIndex
+	 *            the timeMinTHWIndex to set
 	 */
 	public void setTimeMinTHWIndex(LocalTime timeMinTHWIndex) {
 		this.timeMinTHWIndex = timeMinTHWIndex;
@@ -1180,7 +1246,8 @@ public class DailySummary {
 	}
 
 	/**
-	 * @param avgOutTemp the avgOutTemp to set
+	 * @param avgOutTemp
+	 *            the avgOutTemp to set
 	 */
 	public void setAvgOutTemp(Double avgOutTemp) {
 		this.avgOutTemp = avgOutTemp;
@@ -1194,7 +1261,8 @@ public class DailySummary {
 	}
 
 	/**
-	 * @param avgInTemp the avgInTemp to set
+	 * @param avgInTemp
+	 *            the avgInTemp to set
 	 */
 	public void setAvgInTemp(Double avgInTemp) {
 		this.avgInTemp = avgInTemp;
@@ -1208,7 +1276,8 @@ public class DailySummary {
 	}
 
 	/**
-	 * @param avgWindChill the avgWindChill to set
+	 * @param avgWindChill
+	 *            the avgWindChill to set
 	 */
 	public void setAvgWindChill(Double avgWindChill) {
 		this.avgWindChill = avgWindChill;
@@ -1222,7 +1291,8 @@ public class DailySummary {
 	}
 
 	/**
-	 * @param avgDewPoint the avgDewPoint to set
+	 * @param avgDewPoint
+	 *            the avgDewPoint to set
 	 */
 	public void setAvgDewPoint(Double avgDewPoint) {
 		this.avgDewPoint = avgDewPoint;
@@ -1236,7 +1306,8 @@ public class DailySummary {
 	}
 
 	/**
-	 * @param avgOutHum the avgOutHum to set
+	 * @param avgOutHum
+	 *            the avgOutHum to set
 	 */
 	public void setAvgOutHum(Integer avgOutHum) {
 		this.avgOutHum = avgOutHum;
@@ -1250,7 +1321,8 @@ public class DailySummary {
 	}
 
 	/**
-	 * @param avgPressure the avgPressure to set
+	 * @param avgPressure
+	 *            the avgPressure to set
 	 */
 	public void setAvgPressure(Double avgPressure) {
 		this.avgPressure = avgPressure;
@@ -1264,7 +1336,8 @@ public class DailySummary {
 	}
 
 	/**
-	 * @param avgWindSpeed the avgWindSpeed to set
+	 * @param avgWindSpeed
+	 *            the avgWindSpeed to set
 	 */
 	public void setAvgWindSpeed(Double avgWindSpeed) {
 		this.avgWindSpeed = avgWindSpeed;
@@ -1278,7 +1351,8 @@ public class DailySummary {
 	}
 
 	/**
-	 * @param avgHeatIndex the avgHeatIndex to set
+	 * @param avgHeatIndex
+	 *            the avgHeatIndex to set
 	 */
 	public void setAvgHeatIndex(Double avgHeatIndex) {
 		this.avgHeatIndex = avgHeatIndex;

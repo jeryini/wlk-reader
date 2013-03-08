@@ -15,16 +15,22 @@ import javax.measure.unit.SI;
 import javax.measure.unit.Unit;
 
 /**
- * @author Jernej
- *
+ * Helper class for converting from decimal/mili representation of data to
+ * integer. If user specified it also converts from imperial units (fahrenheit)
+ * to metric units (celsius).
+ * 
+ * @author Jernej Jerin <jernej.jerin@gmail.com>
+ * @version %I%, %G%
+ * @since 1.0
  */
 public class DataConverter {
 	// Properties
 	private boolean unit = true;
-	
+
 	// Units for conversion from imperial to metric system.
 	static Unit<Pressure> HECTO_PASCAL = SI.HECTO(SI.PASCAL);
-	static Unit<Pressure> INCH_OF_MERCURY_MILI = SI.MILLI(NonSI.INCH_OF_MERCURY);
+	static Unit<Pressure> INCH_OF_MERCURY_MILI = SI
+			.MILLI(NonSI.INCH_OF_MERCURY);
 	static Unit<Temperature> FAHRENHEIT = NonSI.FAHRENHEIT;
 	static Unit<Temperature> FAHRENHEIT_DECI = SI.DECI(NonSI.FAHRENHEIT);
 	static Unit<Temperature> CELSIUS = SI.CELSIUS;
@@ -34,23 +40,23 @@ public class DataConverter {
 	static Unit<Length> INCH_MILI = SI.MILLI(NonSI.INCH);
 	static Unit<Length> KILOMETER = SI.KILOMETER;
 	static Unit<Length> MILE_DECI = SI.DECI(NonSI.MILE);
-	
+
 	/**
+	 * Constructor.
 	 * 
 	 * @param unit
 	 */
 	public DataConverter(boolean unit) {
 		this.unit = unit;
 	}
-	
+
 	/**
-	 * If unit conversion is disabled than it converts pressure in 
-	 * thousand inches of mercury to inches of mercury. If unit 
-	 * conversion is enabled then it converts thousand inches of 
-	 * mercury to hectopascal.
+	 * If unit conversion is disabled than it converts pressure in thousand
+	 * inches of mercury to inches of mercury. If unit conversion is enabled
+	 * then it converts thousand inches of mercury to hectopascal.
 	 * 
 	 * @param pressure
-	 * @return Converted pressure
+	 * @return converted pressure
 	 */
 	public Double convertPressure(Short pressure) {
 		if (pressure == Short.MIN_VALUE) {
@@ -58,22 +64,24 @@ public class DataConverter {
 		} else {
 			// Is unit conversion enabled?
 			if (this.unit) {
-				// Conversion from imperial unit (inch of mercury mili) to metric units (hecto pascal).
-				return INCH_OF_MERCURY_MILI.getConverterTo(HECTO_PASCAL).convert(pressure);
+				// Conversion from imperial unit (inch of mercury mili) to
+				// metric units (hecto pascal).
+				return INCH_OF_MERCURY_MILI.getConverterTo(HECTO_PASCAL)
+						.convert(pressure);
 			} else {
 				// Only division with 1e3.
 				return (double) (pressure / 1e3);
 			}
 		}
 	}
-	
+
 	/**
-	 * If unit conversion is disabled than it converts windrun in 
-	 * deci miles to miles. If unit conversion is enabled then it 
-	 * converts deci miles to kilometers.
+	 * If unit conversion is disabled than it converts windrun in deci miles to
+	 * miles. If unit conversion is enabled then it converts deci miles to
+	 * kilometers.
 	 * 
 	 * @param windRun
-	 * @return Converted windrun
+	 * @return converted windrun
 	 */
 	public Double convertWindRun(Short windRun) {
 		if (windRun == Short.MIN_VALUE) {
@@ -81,7 +89,8 @@ public class DataConverter {
 		} else {
 			// Is unit conversion enabled?
 			if (this.unit) {
-				// Conversion from imperial unit (deci mile) to metric units (kilometer).
+				// Conversion from imperial unit (deci mile) to metric units
+				// (kilometer).
 				return MILE_DECI.getConverterTo(KILOMETER).convert(windRun);
 			} else {
 				// Only division with 1e1.
@@ -89,13 +98,12 @@ public class DataConverter {
 			}
 		}
 	}
-	
+
 	/**
-	 * The precipitation which is represented in 1/1000'th
-	 * of an inch.
+	 * The precipitation which is represented in 1/1000'th of an inch.
 	 * 
 	 * @param precipitation
-	 * @return
+	 * @return converted precipitation
 	 */
 	public Double convertPrecipitation(Short precipitation) {
 		if (precipitation == Short.MIN_VALUE) {
@@ -104,19 +112,20 @@ public class DataConverter {
 			// Is unit conversion enabled?
 			if (this.unit) {
 				// Conversion from imperial unit (inch) to metric units (mm).
-				return INCH_MILI.getConverterTo(MILIMETER).convert(precipitation);
+				return INCH_MILI.getConverterTo(MILIMETER).convert(
+						precipitation);
 			} else {
 				// Only division with 1e3.
 				return (double) (precipitation / 1e3);
 			}
 		}
 	}
-	
+
 	/**
 	 * Converting temperature from deci fahrenheit to celsius.
 	 * 
 	 * @param temperature
-	 * @return Converted temperature
+	 * @return converted temperature
 	 */
 	public Double convertTemperature(Short temperature) {
 		if (temperature == Short.MIN_VALUE) {
@@ -124,21 +133,23 @@ public class DataConverter {
 		} else {
 			// Is unit conversion enabled?
 			if (this.unit) {
-				// Conversion from imperial unit (fahrenheti deci) to metric units (celsius).
-				return FAHRENHEIT_DECI.getConverterTo(CELSIUS).convert(temperature);
+				// Conversion from imperial unit (fahrenheti deci) to metric
+				// units (celsius).
+				return FAHRENHEIT_DECI.getConverterTo(CELSIUS).convert(
+						temperature);
 			} else {
 				// Only division with 1e1.
 				return (double) (temperature / 1e1);
 			}
 		}
 	}
-	
+
 	/**
-	 * Converting humidity from deci humidity to integer humidity.
-	 * Humidity is always represented in procentage.
+	 * Converting humidity from deci humidity to integer humidity. Humidity is
+	 * always represented in procentage.
 	 * 
 	 * @param humidity
-	 * @return Converted humidity
+	 * @return converted humidity
 	 */
 	public Integer convertHumidity(Short humidity) {
 		if (humidity == Short.MIN_VALUE) {
@@ -150,12 +161,12 @@ public class DataConverter {
 			return roundedHumidity.intValue();
 		}
 	}
-	
+
 	/**
 	 * Converting wind speed of tenths mile per hour to meters per second.
 	 * 
 	 * @param windSpeed
-	 * @return Converted wind speed
+	 * @return converted wind speed
 	 */
 	public Double convertWindSpeed(Short windSpeed) {
 		if (windSpeed == Short.MIN_VALUE) {
@@ -163,7 +174,8 @@ public class DataConverter {
 		} else {
 			// Is unit conversion enabled?
 			if (this.unit) {
-				// Conversion from imperial unit (mph deci) to metric units (m/s).
+				// Conversion from imperial unit (mph deci) to metric units
+				// (m/s).
 				return MPH_DECI.getConverterTo(MPS).convert(windSpeed);
 			} else {
 				// Only division with 1e1.
@@ -171,7 +183,7 @@ public class DataConverter {
 			}
 		}
 	}
-	
+
 	/**
 	 * Converting wind direction code (0 - 15) to wind direction in degrees.
 	 * 
@@ -179,7 +191,7 @@ public class DataConverter {
 	 * @return converted wind direction
 	 */
 	public Double convertWindDirection(Short windDirection) {
-		// If wind direction is 255 then it means that the wind 
+		// If wind direction is 255 then it means that the wind
 		// speed was 0 and direction is undefined.
 		if (windDirection == 255) {
 			return null;
@@ -188,7 +200,7 @@ public class DataConverter {
 			return windDirection * 22.5;
 		}
 	}
-	
+
 	/**
 	 * Conversion from tenths of an UV index to UV index.
 	 * 
@@ -203,7 +215,7 @@ public class DataConverter {
 			return UV / 1e1;
 		}
 	}
-	
+
 	/**
 	 * Conversion from Ly (Langley) to J/m^2.
 	 * 

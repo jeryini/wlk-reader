@@ -3,9 +3,12 @@ package data;
 import org.joda.time.LocalTime;
 
 /**
+ * Converted weather data. The data is represented in fahrenheit or celsius
+ * units. Missing data is represented as NULL values.
  * 
- * @author Jernej
- *
+ * @author Jernej Jerin <jernej.jerin@gmail.com>
+ * @version %I%, %G%
+ * @since 1.0
  */
 public class WeatherDataRecord {
 	// Properties
@@ -14,7 +17,7 @@ public class WeatherDataRecord {
 	private int iconFlags;
 	private LocalTime time;
 	private Integer numwindSamples;
-	
+
 	// Meteorological data.
 	private Double outTemp;
 	private Double maxOutTemp;
@@ -43,14 +46,13 @@ public class WeatherDataRecord {
 	private Double[] leafWetness = new Double[4];
 	private Double[] extraTemp = new Double[7];
 	private Double[] extraHum = new Double[7];
-	
+
 	/**
 	 * Empty constructor.
 	 */
 	public WeatherDataRecord() {
 		super();
 	}
-	
 
 	/**
 	 * Constructor using all the fields.
@@ -94,8 +96,8 @@ public class WeatherDataRecord {
 			Double precipitation, Double maxPrecipitationRate,
 			Double windSpeed, Double maxWindSpeed, Double windDirection,
 			Double maxWindDirection, Double solarRad, Double maxSolarRad,
-			Double uV, Double maxUV, Double[] leafTemp, Double extraRad,
-			Double[] newSensors, Integer forecast, Double eT,
+			Double UV, Double maxUV, Double[] leafTemp, Double extraRad,
+			Double[] newSensors, Integer forecast, Double ET,
 			Double[] soilTemp, Double[] soilMoisture, Double[] leafWetness,
 			Double[] extraTemp, Double[] extraHum) {
 		super();
@@ -118,20 +120,19 @@ public class WeatherDataRecord {
 		this.maxWindDirection = maxWindDirection;
 		this.solarRad = solarRad;
 		this.maxSolarRad = maxSolarRad;
-		UV = uV;
+		this.UV = UV;
 		this.maxUV = maxUV;
 		this.leafTemp = leafTemp;
 		this.extraRad = extraRad;
 		this.newSensors = newSensors;
 		this.forecast = forecast;
-		ET = eT;
+		this.ET = ET;
 		this.soilTemp = soilTemp;
 		this.soilMoisture = soilMoisture;
 		this.leafWetness = leafWetness;
 		this.extraTemp = extraTemp;
 		this.extraHum = extraHum;
 	}
-
 
 	/**
 	 * @return the archiveInterval
@@ -141,7 +142,8 @@ public class WeatherDataRecord {
 	}
 
 	/**
-	 * @param archiveInterval the archiveInterval to set
+	 * @param archiveInterval
+	 *            the archiveInterval to set
 	 */
 	public void setArchiveInterval(int archiveInterval) {
 		this.archiveInterval = archiveInterval;
@@ -155,7 +157,8 @@ public class WeatherDataRecord {
 	}
 
 	/**
-	 * @param iconFlags the iconFlags to set
+	 * @param iconFlags
+	 *            the iconFlags to set
 	 */
 	public void setIconFlags(int iconFlags) {
 		this.iconFlags = iconFlags;
@@ -169,7 +172,8 @@ public class WeatherDataRecord {
 	}
 
 	/**
-	 * @param time the time to set
+	 * @param time
+	 *            the time to set
 	 */
 	public void setTime(LocalTime time) {
 		this.time = time;
@@ -183,7 +187,8 @@ public class WeatherDataRecord {
 	}
 
 	/**
-	 * @param numwindSamples the numwindSamples to set
+	 * @param numwindSamples
+	 *            the numwindSamples to set
 	 */
 	public void setNumwindSamples(Integer numwindSamples) {
 		this.numwindSamples = numwindSamples;
@@ -197,7 +202,8 @@ public class WeatherDataRecord {
 	}
 
 	/**
-	 * @param outTemp the outTemp to set
+	 * @param outTemp
+	 *            the outTemp to set
 	 */
 	public void setOutTemp(Double outTemp) {
 		this.outTemp = outTemp;
@@ -211,7 +217,8 @@ public class WeatherDataRecord {
 	}
 
 	/**
-	 * @param maxOutTemp the maxOutTemp to set
+	 * @param maxOutTemp
+	 *            the maxOutTemp to set
 	 */
 	public void setMaxOutTemp(Double maxOutTemp) {
 		this.maxOutTemp = maxOutTemp;
@@ -225,7 +232,8 @@ public class WeatherDataRecord {
 	}
 
 	/**
-	 * @param minOutTemp the minOutTemp to set
+	 * @param minOutTemp
+	 *            the minOutTemp to set
 	 */
 	public void setMinOutTemp(Double minOutTemp) {
 		this.minOutTemp = minOutTemp;
@@ -239,7 +247,8 @@ public class WeatherDataRecord {
 	}
 
 	/**
-	 * @param inTemp the inTemp to set
+	 * @param inTemp
+	 *            the inTemp to set
 	 */
 	public void setInTemp(Double inTemp) {
 		this.inTemp = inTemp;
@@ -253,7 +262,8 @@ public class WeatherDataRecord {
 	}
 
 	/**
-	 * @param pressure the pressure to set
+	 * @param pressure
+	 *            the pressure to set
 	 */
 	public void setPressure(Double pressure) {
 		this.pressure = pressure;
@@ -267,7 +277,8 @@ public class WeatherDataRecord {
 	}
 
 	/**
-	 * @param outHumidity the outHumidity to set
+	 * @param outHumidity
+	 *            the outHumidity to set
 	 */
 	public void setOutHumidity(Integer outHumidity) {
 		this.outHumidity = outHumidity;
@@ -281,7 +292,8 @@ public class WeatherDataRecord {
 	}
 
 	/**
-	 * @param inHumidity the inHumidity to set
+	 * @param inHumidity
+	 *            the inHumidity to set
 	 */
 	public void setInHumidity(Integer inHumidity) {
 		this.inHumidity = inHumidity;
@@ -295,7 +307,8 @@ public class WeatherDataRecord {
 	}
 
 	/**
-	 * @param precipitation the precipitation to set
+	 * @param precipitation
+	 *            the precipitation to set
 	 */
 	public void setPrecipitation(Double precipitation) {
 		this.precipitation = precipitation;
@@ -309,7 +322,8 @@ public class WeatherDataRecord {
 	}
 
 	/**
-	 * @param maxPrecipitationRate the maxPrecipitationRate to set
+	 * @param maxPrecipitationRate
+	 *            the maxPrecipitationRate to set
 	 */
 	public void setMaxPrecipitationRate(Double maxPrecipitationRate) {
 		this.maxPrecipitationRate = maxPrecipitationRate;
@@ -323,7 +337,8 @@ public class WeatherDataRecord {
 	}
 
 	/**
-	 * @param windSpeed the windSpeed to set
+	 * @param windSpeed
+	 *            the windSpeed to set
 	 */
 	public void setWindSpeed(Double windSpeed) {
 		this.windSpeed = windSpeed;
@@ -337,7 +352,8 @@ public class WeatherDataRecord {
 	}
 
 	/**
-	 * @param maxWindSpeed the maxWindSpeed to set
+	 * @param maxWindSpeed
+	 *            the maxWindSpeed to set
 	 */
 	public void setMaxWindSpeed(Double maxWindSpeed) {
 		this.maxWindSpeed = maxWindSpeed;
@@ -351,7 +367,8 @@ public class WeatherDataRecord {
 	}
 
 	/**
-	 * @param windDirection the windDirection to set
+	 * @param windDirection
+	 *            the windDirection to set
 	 */
 	public void setWindDirection(Double windDirection) {
 		this.windDirection = windDirection;
@@ -365,7 +382,8 @@ public class WeatherDataRecord {
 	}
 
 	/**
-	 * @param maxWindDirection the maxWindDirection to set
+	 * @param maxWindDirection
+	 *            the maxWindDirection to set
 	 */
 	public void setMaxWindDirection(Double maxWindDirection) {
 		this.maxWindDirection = maxWindDirection;
@@ -379,7 +397,8 @@ public class WeatherDataRecord {
 	}
 
 	/**
-	 * @param solarRad the solarRad to set
+	 * @param solarRad
+	 *            the solarRad to set
 	 */
 	public void setSolarRad(Double solarRad) {
 		this.solarRad = solarRad;
@@ -393,7 +412,8 @@ public class WeatherDataRecord {
 	}
 
 	/**
-	 * @param maxSolarRad the maxSolarRad to set
+	 * @param maxSolarRad
+	 *            the maxSolarRad to set
 	 */
 	public void setMaxSolarRad(Double maxSolarRad) {
 		this.maxSolarRad = maxSolarRad;
@@ -407,7 +427,8 @@ public class WeatherDataRecord {
 	}
 
 	/**
-	 * @param uV the uV to set
+	 * @param uV
+	 *            the uV to set
 	 */
 	public void setUV(Double uV) {
 		UV = uV;
@@ -421,7 +442,8 @@ public class WeatherDataRecord {
 	}
 
 	/**
-	 * @param maxUV the maxUV to set
+	 * @param maxUV
+	 *            the maxUV to set
 	 */
 	public void setMaxUV(Double maxUV) {
 		this.maxUV = maxUV;
@@ -435,7 +457,8 @@ public class WeatherDataRecord {
 	}
 
 	/**
-	 * @param leafTemp the leafTemp to set
+	 * @param leafTemp
+	 *            the leafTemp to set
 	 */
 	public void setLeafTemp(Double[] leafTemp) {
 		this.leafTemp = leafTemp;
@@ -449,7 +472,8 @@ public class WeatherDataRecord {
 	}
 
 	/**
-	 * @param extraRad the extraRad to set
+	 * @param extraRad
+	 *            the extraRad to set
 	 */
 	public void setExtraRad(Double extraRad) {
 		this.extraRad = extraRad;
@@ -463,7 +487,8 @@ public class WeatherDataRecord {
 	}
 
 	/**
-	 * @param newSensors the newSensors to set
+	 * @param newSensors
+	 *            the newSensors to set
 	 */
 	public void setNewSensors(Double[] newSensors) {
 		this.newSensors = newSensors;
@@ -477,7 +502,8 @@ public class WeatherDataRecord {
 	}
 
 	/**
-	 * @param forecast the forecast to set
+	 * @param forecast
+	 *            the forecast to set
 	 */
 	public void setForecast(Integer forecast) {
 		this.forecast = forecast;
@@ -491,7 +517,8 @@ public class WeatherDataRecord {
 	}
 
 	/**
-	 * @param eT the eT to set
+	 * @param eT
+	 *            the eT to set
 	 */
 	public void setET(Double eT) {
 		ET = eT;
@@ -505,7 +532,8 @@ public class WeatherDataRecord {
 	}
 
 	/**
-	 * @param soilTemp the soilTemp to set
+	 * @param soilTemp
+	 *            the soilTemp to set
 	 */
 	public void setSoilTemp(Double[] soilTemp) {
 		this.soilTemp = soilTemp;
@@ -519,7 +547,8 @@ public class WeatherDataRecord {
 	}
 
 	/**
-	 * @param soilMoisture the soilMoisture to set
+	 * @param soilMoisture
+	 *            the soilMoisture to set
 	 */
 	public void setSoilMoisture(Double[] soilMoisture) {
 		this.soilMoisture = soilMoisture;
@@ -533,7 +562,8 @@ public class WeatherDataRecord {
 	}
 
 	/**
-	 * @param leafWetness the leafWetness to set
+	 * @param leafWetness
+	 *            the leafWetness to set
 	 */
 	public void setLeafWetness(Double[] leafWetness) {
 		this.leafWetness = leafWetness;
@@ -547,7 +577,8 @@ public class WeatherDataRecord {
 	}
 
 	/**
-	 * @param extraTemp the extraTemp to set
+	 * @param extraTemp
+	 *            the extraTemp to set
 	 */
 	public void setExtraTemp(Double[] extraTemp) {
 		this.extraTemp = extraTemp;
@@ -561,10 +592,10 @@ public class WeatherDataRecord {
 	}
 
 	/**
-	 * @param extraHum the extraHum to set
+	 * @param extraHum
+	 *            the extraHum to set
 	 */
 	public void setExtraHum(Double[] extraHum) {
 		this.extraHum = extraHum;
 	}
 }
-
