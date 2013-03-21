@@ -76,13 +76,13 @@ public class WeatherDataRecord {
 	 * @param maxWindDirection
 	 * @param solarRad
 	 * @param maxSolarRad
-	 * @param uV
+	 * @param UV
 	 * @param maxUV
 	 * @param leafTemp
 	 * @param extraRad
 	 * @param newSensors
 	 * @param forecast
-	 * @param eT
+	 * @param ET
 	 * @param soilTemp
 	 * @param soilMoisture
 	 * @param leafWetness

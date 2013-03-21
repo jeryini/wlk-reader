@@ -721,7 +721,7 @@ public class WlkReader {
 	/**
 	 * Returns the contents of the file in a byte array.
 	 * 
-	 * @author Example Depot
+	 * The author: Example Depot
 	 *         (http://www.exampledepot.com/egs/java.io/file2bytearray.html)
 	 * @param file
 	 *            file from which the content is read
