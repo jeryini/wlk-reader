@@ -28,7 +28,8 @@ import reader.WlkReader;
  * @since 1.0
  */
 public class WlkReaderTest {
-	WlkReader wlkReaderTest, wlkReaderDateTimeTest, wlkReaderBooleanTest;
+	WlkReader wlkReaderTest, wlkReaderDateTimeStartTest,
+			wlkReaderDateTimeEndTest, wlkReaderDateTimeStartEndTest, wlkReaderBooleanTest;
 
 	/**
 	 * @throws java.lang.Exception
@@ -40,8 +41,15 @@ public class WlkReaderTest {
 		// the second file represents summer (august).
 		URL resourceURL = getClass().getResource(".");
 		wlkReaderTest = new WlkReader(new File(resourceURL.getPath()));
-		wlkReaderDateTimeTest = new WlkReader(new File(resourceURL.getPath()),
-				new DateTime(2012, 2, 5, 14, 0));
+		wlkReaderDateTimeStartTest = new WlkReader(new File(
+				resourceURL.getPath()), new DateTime(2012, 2, 5, 14, 0), null);
+		wlkReaderDateTimeEndTest = new WlkReader(
+				new File(resourceURL.getPath()), null, new DateTime(2012, 8,
+						25, 18, 30));
+		wlkReaderDateTimeStartEndTest = new WlkReader(
+				new File(resourceURL.getPath()), new DateTime(2012, 8,
+						5, 22, 5), new DateTime(2012, 8,
+						17, 2, 20));
 		wlkReaderBooleanTest = new WlkReader(new File(resourceURL.getPath()),
 				false);
 	}
@@ -75,11 +83,11 @@ public class WlkReaderTest {
 	 * {@link reader.WlkReader#WlkReader(java.io.File, org.joda.time.DateTime)}.
 	 */
 	@Test
-	public void testWlkReaderFileDateTime() {
+	public void testWlkReaderFileDateTimeStart() {
 		List<DailyWeatherData> dailyWeatherDataList = null;
 		// First we get the data.
 		try {
-			dailyWeatherDataList = wlkReaderDateTimeTest.readData();
+			dailyWeatherDataList = wlkReaderDateTimeStartTest.readData();
 		} catch (IllegalArgumentException | UnsupportedOperationException
 				| ArithmeticException | IOException e) {
 			// Failed because of exceptions.
@@ -104,6 +112,112 @@ public class WlkReaderTest {
 		// Check for correct air temperature reading at 5.2.2012 14:01.
 		assertEquals("Specified outdoor temperature does not match!", -6.7,
 				dailyWeatherDataList.get(0).getWeatherDataRecords().get(0)
+						.getOutTemp(), 0.1);
+	}
+
+	/**
+	 * Test method for
+	 * {@link reader.WlkReader#WlkReader(java.io.File, org.joda.time.DateTime)}.
+	 */
+	@Test
+	public void testWlkReaderFileDateTimeEnd() {
+		List<DailyWeatherData> dailyWeatherDataList = null;
+		// First we get the data.
+		try {
+			dailyWeatherDataList = wlkReaderDateTimeEndTest.readData();
+		} catch (IllegalArgumentException | UnsupportedOperationException
+				| ArithmeticException | IOException e) {
+			// Failed because of exceptions.
+			fail(e.getMessage());
+		}
+		// 29 (February) + 25 (to including 25th of August) should give 54
+		// DailyWeatherData entities.
+		assertEquals("Specified list is not of this size!", 54,
+				dailyWeatherDataList.size());
+
+		// The time of the last weather data record should be specified time
+		// minus 1 minute.
+		assertEquals(
+				"Specified time is not equal!",
+				new LocalTime(18, 29),
+				dailyWeatherDataList
+						.get(dailyWeatherDataList.size() - 1)
+						.getWeatherDataRecords()
+						.get(dailyWeatherDataList
+								.get(dailyWeatherDataList.size() - 1)
+								.getWeatherDataRecords().size() - 1).getTime());
+
+		// Check for correct pressure reading at 25.8.2012 18:29.
+		assertEquals("Specified pressure does not match!", 1007.6,
+				dailyWeatherDataList
+				.get(dailyWeatherDataList.size() - 1)
+				.getWeatherDataRecords()
+				.get(dailyWeatherDataList
+						.get(dailyWeatherDataList.size() - 1)
+						.getWeatherDataRecords().size() - 1)
+						.getPressure(), 0.1);
+
+		// Check for correct air temperature reading at 25.8.2012 18:29.
+		assertEquals("Specified outdoor temperature does not match!", 34.4,
+				dailyWeatherDataList
+				.get(dailyWeatherDataList.size() - 1)
+				.getWeatherDataRecords()
+				.get(dailyWeatherDataList
+						.get(dailyWeatherDataList.size() - 1)
+						.getWeatherDataRecords().size() - 1)
+						.getOutTemp(), 0.1);
+	}
+	
+	/**
+	 * Test method for
+	 * {@link reader.WlkReader#WlkReader(java.io.File, org.joda.time.DateTime)}.
+	 */
+	@Test
+	public void testWlkReaderFileDateTimeStartEnd() {
+		List<DailyWeatherData> dailyWeatherDataList = null;
+		// First we get the data.
+		try {
+			dailyWeatherDataList = wlkReaderDateTimeStartEndTest.readData();
+		} catch (IllegalArgumentException | UnsupportedOperationException
+				| ArithmeticException | IOException e) {
+			// Failed because of exceptions.
+			fail(e.getMessage());
+		}
+		// From 2012-08-05 to 2012-08-17 should give 13,
+		// DailyWeatherData entities.
+		assertEquals("Specified list is not of this size!", 13,
+				dailyWeatherDataList.size());
+
+		// The time of the last weather data record should be specified time
+		// minus 1 minute.
+		assertEquals(
+				"Specified time is not equal!",
+				new LocalTime(2, 19),
+				dailyWeatherDataList
+						.get(dailyWeatherDataList.size() - 1)
+						.getWeatherDataRecords()
+						.get(dailyWeatherDataList
+								.get(dailyWeatherDataList.size() - 1)
+								.getWeatherDataRecords().size() - 1).getTime());
+
+		// Check for correct pressure reading at 2012-08-17 02:19.
+		assertEquals("Specified pressure does not match!", 1018.8,
+				dailyWeatherDataList
+				.get(dailyWeatherDataList.size() - 1)
+				.getWeatherDataRecords()
+				.get(dailyWeatherDataList
+						.get(dailyWeatherDataList.size() - 1)
+						.getWeatherDataRecords().size() - 1)
+						.getPressure(), 0.1);
+
+		// Check for correct air temperature reading at 2012-08-17 02:19.
+		assertEquals("Specified outdoor temperature does not match!", 17.6,
+				dailyWeatherDataList
+				.get(dailyWeatherDataList.size() - 1)
+				.getWeatherDataRecords()
+				.get(dailyWeatherDataList
+						.get(dailyWeatherDataList.size() - 1)
+						.getWeatherDataRecords().size() - 1)
 						.getOutTemp(), 0.1);
 	}
 
