@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -72,7 +73,7 @@ public class WlkReader {
 	}
 
 	/**
-	 * @param dateTime
+	 * @param dateTimeStart
 	 *            the dateTimeStart to set
 	 */
 	public void setDateTimeStart(DateTime dateTimeStart) {
@@ -184,8 +185,17 @@ public class WlkReader {
 			ArithmeticException {
 		// First we get all the files with *.wlk extension in specified
 		// directory (usally DavisVan).
-		Collection<File> fileList = FileUtils.listFiles(this.directory,
-				FileFilterUtils.suffixFileFilter("wlk"), null);
+		Collection<File> fileList = null;
+		// If we create WlkReader with a file instead a directory, we create fileList
+		// collection only with one file to parse.
+		if(this.directory.exists() && !this.directory.isDirectory() && this.directory.isFile()) {
+			if(this.directory.getCanonicalPath().endsWith("wlk")) {
+				fileList = new ArrayList<>(Arrays.asList(this.directory));
+			}
+		} else {
+			fileList = FileUtils.listFiles(this.directory,
+					FileFilterUtils.suffixFileFilter("wlk"), null);
+		}
 
 		// A collection where we will save data and later return it.
 		List<DailyWeatherData> dailyWeatherDataList = new ArrayList<DailyWeatherData>();
